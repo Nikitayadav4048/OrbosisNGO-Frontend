@@ -45,7 +45,7 @@ const DonorRegistrationPage = () => {
         formDataToSend.append('uploadPaymentProof', formData.uploadPaymentProof);
       }
 
-      const response = await fetch('https://orbosisngo-backend.onrender.com/api/donation/createOrder', {
+      const response = await fetch('https://orbosisngo-backend-35v5.onrender.com/api/donation/createOrder', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
