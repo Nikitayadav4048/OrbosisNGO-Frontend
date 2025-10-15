@@ -126,9 +126,18 @@ const DonorRegistrationPage = () => {
     }));
   };
 
-  const donationModes = ['bankTransfer', 'upi', 'cheque', 'cash'];
+  const donationModes = [
+    { value: 'bankTransfer', label: 'Bank Transfer' },
+    { value: 'upi', label: 'UPI' },
+    { value: 'cheque', label: 'Cheque' },
+    { value: 'cash', label: 'Cash' }
+  ];
   const frequencies = ['One-time', 'Monthly', 'Quarterly', 'Yearly'];
-  const consentOptions = ['email', 'whatsapp', 'none'];
+  const consentOptions = [
+    { value: 'email', label: 'Email' },
+    { value: 'whatsapp', label: 'WhatsApp' },
+    { value: 'none', label: 'No Updates' }
+  ];
   useEffect(() => {
   window.scrollTo(0, 0);
   }, []);
@@ -273,8 +282,8 @@ const DonorRegistrationPage = () => {
                       </SelectTrigger>
                       <SelectContent>
                         {donationModes.map((mode) => (
-                          <SelectItem key={mode} value={mode}>
-                            {mode.charAt(0).toUpperCase() + mode.slice(1)}
+                          <SelectItem key={mode.value} value={mode.value}>
+                            {mode.label}
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -330,8 +339,8 @@ const DonorRegistrationPage = () => {
                     </SelectTrigger>
                     <SelectContent>
                       {consentOptions.map((option) => (
-                        <SelectItem key={option} value={option}>
-                          {option.charAt(0).toUpperCase() + option.slice(1)}
+                        <SelectItem key={option.value} value={option.value}>
+                          {option.label}
                         </SelectItem>
                       ))}
                     </SelectContent>
