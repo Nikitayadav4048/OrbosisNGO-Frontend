@@ -286,7 +286,7 @@ const DonorRegistrationPage = () => {
                       <SelectTrigger>
                         <SelectValue placeholder="Select mode" />
                       </SelectTrigger>
-                      <SelectContent>
+                      <SelectContent className="z-50">
                         {donationModes.map((mode) => (
                           <SelectItem key={mode.value} value={mode.value}>
                             {mode.label}
@@ -313,7 +313,7 @@ const DonorRegistrationPage = () => {
                       <SelectTrigger>
                         <SelectValue placeholder="Select frequency" />
                       </SelectTrigger>
-                      <SelectContent>
+                      <SelectContent className="z-50">
                         {frequencies.map((freq) => (
                           <SelectItem key={freq} value={freq}>{freq}</SelectItem>
                         ))}
@@ -343,7 +343,7 @@ const DonorRegistrationPage = () => {
                     <SelectTrigger>
                       <SelectValue placeholder="Select preference" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="z-50">
                       {consentOptions.map((option) => (
                         <SelectItem key={option.value} value={option.value}>
                           {option.label}
