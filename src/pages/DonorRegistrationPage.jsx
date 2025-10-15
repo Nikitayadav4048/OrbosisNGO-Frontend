@@ -48,20 +48,14 @@ const DonorRegistrationPage = () => {
       const response = await fetch('https://orbosisngo-backend.onrender.com/api/donation/createOrder', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
+          amount: parseFloat(formData.donationAmount) || 1000,
+          modeofDonation: formData.modeofDonation || "upi",
           donorName: formData.fullName,
-          organisationName: formData.organisationName,
-          contactNumber: formData.contactNumber,
-          email: formData.email,
-          address: formData.address,
-          panNumber: formData.panNumber,
-          gstNumber: formData.gstNumber,
-          modeofDonation: formData.modeofDonation,
-          amount: parseFloat(formData.donationAmount) || 0,
-          donationFrequency: formData.donationFrequency,
-          consentForUpdate: formData.consentForUpdate
+          donorEmail: formData.email,
+          donorPhone: formData.contactNumber
         })
       });
       
