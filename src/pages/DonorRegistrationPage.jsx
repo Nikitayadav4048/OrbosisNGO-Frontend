@@ -51,11 +51,11 @@ const DonorRegistrationPage = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          amount: parseFloat(formData.donationAmount) || 1000,
-          modeofDonation: formData.modeofDonation?.toLowerCase() || "upi",
-          donorName: formData.fullName,
-          donorEmail: formData.email,
-          donorPhone: formData.contactNumber
+          amount: Number(formData.donationAmount) || 1000,
+          modeofDonation: formData.modeofDonation || "upi",
+          donorName: formData.fullName || "",
+          donorEmail: formData.email || "",
+          donorPhone: formData.contactNumber || ""
         })
       });
       
