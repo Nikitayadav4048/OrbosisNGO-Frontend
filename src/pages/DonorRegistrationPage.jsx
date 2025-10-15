@@ -65,6 +65,13 @@ const DonorRegistrationPage = () => {
         })
       });
       
+      if (!response.ok) {
+        if (response.status === 401) {
+          throw new Error('Backend authentication issue. Please contact support.');
+        }
+        throw new Error(`Server error: ${response.status}`);
+      }
+      
       // Check if response is JSON
       const contentType = response.headers.get('content-type');
       if (!contentType || !contentType.includes('application/json')) {
