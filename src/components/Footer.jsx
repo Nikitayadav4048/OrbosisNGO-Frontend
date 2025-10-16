@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Facebook, Twitter, Instagram, Linkedin, Mail, Phone, MapPin, Send, Heart, Users, Award } from 'lucide-react';
+import axios from 'axios';
 
 const Footer = () => {
   const [email, setEmail] = useState('');
 
-  const handleNewsletterSubmit = (e) => {
+  const handleNewsletterSubmit =async (e) => {
+    
+    await axios.post('http://localhost:5000/api/auth/contactUs',{fullName :formData.name, email :formData.email , contactNumber: formData.phone, message: formData.message} )
     e.preventDefault();
     alert('Thank you for subscribing!');
     setEmail('');

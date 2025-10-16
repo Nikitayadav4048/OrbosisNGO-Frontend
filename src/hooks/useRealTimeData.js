@@ -11,7 +11,7 @@ const useRealTimeData = (userId, apiEndpoint) => {
     if (!userId) return;
 
     // Initialize socket connection
-    socketRef.current = io('http://localhost:5000');
+    socketRef.current = io('https://orbosisngo-backend-1.onrender.com');
     
     // Join donor room for real-time updates
     socketRef.current.emit('join-donor-room', userId);
@@ -38,7 +38,7 @@ const useRealTimeData = (userId, apiEndpoint) => {
     try {
       setIsLoading(true);
       const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:5000/api/donation${apiEndpoint}`, {
+      const response = await fetch(`https://orbosisngo-backend-1.onrender.com/api/donation${apiEndpoint}`, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'

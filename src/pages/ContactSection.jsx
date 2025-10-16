@@ -5,6 +5,7 @@ import { Label } from '../components/ui/label.jsx';
 import { Textarea } from '../components/ui/textarea.jsx';
 import { MapPin, Phone, Mail, Clock, Facebook, Twitter, Instagram, Linkedin } from 'lucide-react';
 import { siteContent } from '../data/content.js';
+import axios from 'axios';
 
 const ContactSection = () => {
   const [formData, setFormData] = useState({
@@ -14,7 +15,9 @@ const ContactSection = () => {
     message: ''
   });
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
+    await axios.post('http://localhost:5000/api/auth/contactUs',{fullName :formData.name, email :formData.email , contactNumber: formData.phone, message: formData.message} )
+    console.log("formData-----", formData);
     e.preventDefault();
     console.log('Message sent successfully!');
     setFormData({ name: '', email: '', phone: '', message: '' });

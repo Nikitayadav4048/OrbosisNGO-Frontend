@@ -34,7 +34,7 @@ const DashboardPage = () => {
       const token = localStorage.getItem('authToken');
       if (!token) return;
 
-      const response = await fetch('http://localhost:5000/api/auth/getAdminDashboard', {
+      const response = await fetch('https://orbosisngo-backend-1.onrender.com/api/auth/getAdminDashboard', {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
@@ -49,7 +49,7 @@ const DashboardPage = () => {
       }
       
       // Fetch recent activities
-      const activityResponse = await fetch('http://localhost:5000/api/auth/getRecentActivity', {
+      const activityResponse = await fetch('https://orbosisngo-backend-1.onrender.com/api/auth/getRecentActivity', {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'

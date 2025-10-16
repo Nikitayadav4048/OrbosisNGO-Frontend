@@ -22,12 +22,22 @@ const ContactPage = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
+    try{
+    await axios.post('http://localhost:5000/api/auth/contactUs',{fullName :formData.name, email :formData.email , contactNumber: formData.phone, message: formData.message} )
+    console.log("formData-----", formData);
+     
     e.preventDefault();
     console.log('Form submitted:', formData);
     alert('Thank you for your message! We will get back to you soon.');
     setFormData({ name: '', email: '', phone: '', subject: '', message: '' });
+    }
+    catch(e){
+      console.log("err---" ,e);
+      
+    }
   };
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-amber-50 py-12">

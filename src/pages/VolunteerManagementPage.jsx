@@ -50,7 +50,7 @@ const VolunteerManagementPage = () => {
   const fetchVolunteers = async () => {
     try {
       setIsLoadingVolunteers(true);
-      const response = await fetch('http://localhost:5000/api/volunteer/all');
+      const response = await fetch('https://orbosisngo-backend-1.onrender.com/api/volunteer/all');
       const data = await response.json();
       if (data.success) {
         setVolunteers(data.volunteers);

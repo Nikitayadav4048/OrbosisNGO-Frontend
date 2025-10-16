@@ -8,7 +8,7 @@ const RealTimeNotification = ({ userId }) => {
   useEffect(() => {
     if (!userId) return;
 
-    const socket = io('http://localhost:5000');
+    const socket = io('https://orbosisngo-backend-1.onrender.com');
     socket.emit('join-donor-room', userId);
 
     socket.on('donor-update', (update) => {
