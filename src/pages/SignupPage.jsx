@@ -151,7 +151,7 @@ const SignupPage = () => {
                   <SelectTrigger className="w-full h-9 sm:h-10 px-3 py-2 border border-gray-300 rounded-md bg-white focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-sm">
                     <SelectValue placeholder="Select role" />
                   </SelectTrigger>
-                  <SelectContent className="z-50 bg-white border border-gray-200 rounded-md shadow-lg">
+                  <SelectContent className="z-[60] bg-white border border-gray-200 rounded-md shadow-lg">
                     <SelectItem value="member" className="bg-white hover:bg-gray-50 text-sm">Member</SelectItem>
                     <SelectItem value="volunteer" className="bg-white hover:bg-gray-50 text-sm">Volunteer</SelectItem>
                     <SelectItem value="donor" className="bg-white hover:bg-gray-50 text-sm">Donor</SelectItem>

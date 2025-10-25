@@ -271,7 +271,7 @@ const MembershipApplicationPage = () => {
                       <SelectTrigger className="w-full h-10 px-3 py-2 border border-gray-300 rounded-md bg-white focus:ring-2 focus:ring-purple-500 focus:border-purple-500">
                         <SelectValue placeholder="Select your area of interest" />
                       </SelectTrigger>
-                      <SelectContent className="z-50 bg-white border border-gray-200 rounded-md shadow-lg">
+                      <SelectContent className="z-[60] bg-white border border-gray-200 rounded-md shadow-lg">
                         {areasOfInterest.map((area) => (
                           <SelectItem key={area} value={area} className="bg-white hover:bg-gray-50">
                             {area}

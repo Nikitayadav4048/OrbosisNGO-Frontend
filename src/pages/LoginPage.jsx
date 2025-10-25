@@ -49,13 +49,46 @@ const LoginPage = () => {
         id: data.user?.id
       };
 
-      // Save user data to localStorage
-      localStorage.setItem('userData', JSON.stringify(userData));
+      // If logging in as donor, try to get existing donor data
+      if (formData.role === 'donor') {
+        const existingDonorData = JSON.parse(localStorage.getItem('donorData') || '{}');
+        if (Object.keys(existingDonorData).length > 0) {
+          // Merge existing donor data with user data
+          const mergedUserData = { ...userData, ...existingDonorData };
+          localStorage.setItem('userData', JSON.stringify(mergedUserData));
+          localStorage.setItem('donorData', JSON.stringify(mergedUserData));
+        } else {
+          localStorage.setItem('userData', JSON.stringify(userData));
+        }
+      } else if (formData.role === 'beneficiary') {
+        const existingBeneficiaryData = JSON.parse(localStorage.getItem('beneficiaryData') || '{}');
+        if (Object.keys(existingBeneficiaryData).length > 0) {
+          // Merge existing beneficiary data with user data
+          const mergedUserData = { ...userData, ...existingBeneficiaryData };
+          localStorage.setItem('userData', JSON.stringify(mergedUserData));
+          localStorage.setItem('beneficiaryData', JSON.stringify(mergedUserData));
+        } else {
+          localStorage.setItem('userData', JSON.stringify(userData));
+        }
+      } else {
+        localStorage.setItem('userData', JSON.stringify(userData));
+      }
       
       // Set user data and navigate to dashboard
       setCurrentUser(userData);
       
-      navigate('/dashboard');
+      // Navigate based on role
+      if (formData.role === 'admin') {
+        navigate('/dashboard');
+      } else if (formData.role === 'donor') {
+        navigate('/dashboard');
+      } else if (formData.role === 'volunteer') {
+        navigate('/dashboard');
+      } else if (formData.role === 'beneficiary') {
+        navigate('/dashboard');
+      } else {
+        navigate('/dashboard');
+      }
     } catch (error) {
       console.error('Login failed:', error);
       // For demo purposes, still allow login with demo credentials
@@ -65,11 +98,45 @@ const LoginPage = () => {
         role: formData.role
       };
       
-      // Save user data to localStorage for demo
-      localStorage.setItem('userData', JSON.stringify(userData));
+      // If logging in as donor, try to get existing donor data
+      if (formData.role === 'donor') {
+        const existingDonorData = JSON.parse(localStorage.getItem('donorData') || '{}');
+        if (Object.keys(existingDonorData).length > 0) {
+          // Merge existing donor data with user data
+          const mergedUserData = { ...userData, ...existingDonorData };
+          localStorage.setItem('userData', JSON.stringify(mergedUserData));
+          localStorage.setItem('donorData', JSON.stringify(mergedUserData));
+        } else {
+          localStorage.setItem('userData', JSON.stringify(userData));
+        }
+      } else if (formData.role === 'beneficiary') {
+        const existingBeneficiaryData = JSON.parse(localStorage.getItem('beneficiaryData') || '{}');
+        if (Object.keys(existingBeneficiaryData).length > 0) {
+          // Merge existing beneficiary data with user data
+          const mergedUserData = { ...userData, ...existingBeneficiaryData };
+          localStorage.setItem('userData', JSON.stringify(mergedUserData));
+          localStorage.setItem('beneficiaryData', JSON.stringify(mergedUserData));
+        } else {
+          localStorage.setItem('userData', JSON.stringify(userData));
+        }
+      } else {
+        localStorage.setItem('userData', JSON.stringify(userData));
+      }
       
       setCurrentUser(userData);
-      navigate('/dashboard');
+      
+      // Navigate based on role
+      if (formData.role === 'admin') {
+        navigate('/dashboard');
+      } else if (formData.role === 'donor') {
+        navigate('/dashboard');
+      } else if (formData.role === 'volunteer') {
+        navigate('/dashboard');
+      } else if (formData.role === 'beneficiary') {
+        navigate('/dashboard');
+      } else {
+        navigate('/dashboard');
+      }
     } finally {
       setLoading(false);
     }
@@ -143,7 +210,7 @@ const LoginPage = () => {
                 <SelectTrigger className="w-full h-9 sm:h-10 px-3 py-2 border border-gray-300 rounded-md bg-white focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-sm">
                   <SelectValue placeholder="Select role" />
                 </SelectTrigger>
-                <SelectContent className="z-50 bg-white border border-gray-200 rounded-md shadow-lg">
+                <SelectContent className="z-[60] bg-white border border-gray-200 rounded-md shadow-lg">
                   <SelectItem value="admin" className="bg-white hover:bg-gray-50 text-sm">Admin</SelectItem>
                   <SelectItem value="volunteer" className="bg-white hover:bg-gray-50 text-sm">Volunteer</SelectItem>
                   <SelectItem value="donor" className="bg-white hover:bg-gray-50 text-sm">Donor</SelectItem>

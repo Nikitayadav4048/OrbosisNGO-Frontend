@@ -124,21 +124,9 @@ const Sidebar = ({ activeTab, setActiveTab }) => {
 
         // Beneficiary Menu Items
         {
-            id: 'my-programs',
-            label: 'My Programs',
-            icon: Users,
-            roles: ['beneficiary']
-        },
-        {
-            id: 'my-certificates',
-            label: 'My Certificates',
-            icon: Award,
-            roles: ['beneficiary']
-        },
-        {
-            id: 'available-events',
-            label: 'Events',
-            icon: Calendar,
+            id: 'beneficiary-profile',
+            label: 'My Profile',
+            icon: User,
             roles: ['beneficiary']
         }
     ];
@@ -271,7 +259,7 @@ const Sidebar = ({ activeTab, setActiveTab }) => {
 
                         {/* Dropdown Menu */}
                         {isUserMenuOpen && (
-                            <div className="absolute bottom-full left-0 right-0 mb-2 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
+                            <div className="absolute bottom-full left-0 right-0 mb-2 bg-white border border-gray-200 rounded-lg shadow-lg z-[60]">
                                 <div className="py-1">
                                     <button
                                         onClick={() => {
@@ -281,6 +269,8 @@ const Sidebar = ({ activeTab, setActiveTab }) => {
                                                 setActiveTab('volunteer-profile');
                                             } else if (currentUser?.role === 'donor') {
                                                 setActiveTab('donor-profile');
+                                            } else if (currentUser?.role === 'beneficiary') {
+                                                navigate('/profile');
                                             } else {
                                                 navigate('/profile');
                                             }

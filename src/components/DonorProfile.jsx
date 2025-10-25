@@ -12,23 +12,70 @@ const DonorProfile = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    setTimeout(() => {
-      const mockProfile = {
-        fullName: 'Rajesh Kumar',
-        email: 'rajesh.kumar@example.com',
-        phone: '+91 8770702092',
-        address: '456 Park Street, Kolkata',
-        city: 'Kolkata',
-        state: 'West Bengal',
-        joinDate: '2023-06-20',
-        totalDonated: 125000,
-        donationsCount: 15,
-        preferredCauses: ['Education', 'Healthcare']
+    // Load donor data from localStorage
+    const donorData = localStorage.getItem('donorData');
+    if (donorData) {
+      try {
+        const parsedData = JSON.parse(donorData);
+        const profileData = {
+          fullName: parsedData.name || 'Donor',
+          email: parsedData.email || '',
+          phone: parsedData.phone || '',
+          address: parsedData.address || '',
+          organization: parsedData.organization || '',
+          joinDate: new Date(parsedData.registrationDate).toLocaleDateString(),
+          totalDonated: parsedData.donationAmount || 0,
+          donationsCount: 1,
+          donationFrequency: parsedData.donationFrequency || 'One-time',
+          donationMode: parsedData.donationMode || 'Bank Transfer',
+          panNumber: parsedData.panNumber || '',
+          gstNumber: parsedData.gstNumber || '',
+          preferredCauses: ['Women Empowerment']
+        };
+        setProfile(profileData);
+        setEditedProfile(profileData);
+      } catch (error) {
+        console.error('Error parsing donor data:', error);
+        // Fallback to mock data
+        const mockProfile = {
+          fullName: 'Donor',
+          email: '',
+          phone: '',
+          address: '',
+          organization: '',
+          joinDate: new Date().toLocaleDateString(),
+          totalDonated: 0,
+          donationsCount: 0,
+          donationFrequency: 'One-time',
+          donationMode: 'Bank Transfer',
+          panNumber: '',
+          gstNumber: '',
+          preferredCauses: ['Women Empowerment']
+        };
+        setProfile(mockProfile);
+        setEditedProfile(mockProfile);
+      }
+    } else {
+      // No donor data found, show empty profile
+      const emptyProfile = {
+        fullName: 'Donor',
+        email: '',
+        phone: '',
+        address: '',
+        organization: '',
+        joinDate: new Date().toLocaleDateString(),
+        totalDonated: 0,
+        donationsCount: 0,
+        donationFrequency: 'One-time',
+        donationMode: 'Bank Transfer',
+        panNumber: '',
+        gstNumber: '',
+        preferredCauses: ['Women Empowerment']
       };
-      setProfile(mockProfile);
-      setEditedProfile(mockProfile);
-      setIsLoading(false);
-    }, 1000);
+      setProfile(emptyProfile);
+      setEditedProfile(emptyProfile);
+    }
+    setIsLoading(false);
   }, []);
 
   const handleSave = () => {
@@ -197,6 +244,72 @@ const DonorProfile = () => {
                         </div>
                       )}
                     </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Donation Details Section */}
+            <Card className="border-0 shadow-sm mt-6">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Heart className="h-5 w-5 text-purple-600" />
+                  Donation Registration Details
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label>Organization</Label>
+                    <div className="p-2 bg-gray-50 rounded-md">
+                      <span>{profile.organization || 'Not specified'}</span>
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label>Donation Amount</Label>
+                    <div className="p-2 bg-gray-50 rounded-md">
+                      <span className="font-semibold text-green-600">₹{profile.totalDonated?.toLocaleString() || '0'}</span>
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label>Donation Frequency</Label>
+                    <div className="p-2 bg-gray-50 rounded-md">
+                      <span>{profile.donationFrequency}</span>
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label>Payment Mode</Label>
+                    <div className="p-2 bg-gray-50 rounded-md">
+                      <span>{profile.donationMode}</span>
+                    </div>
+                  </div>
+
+                  {profile.panNumber && (
+                    <div className="space-y-2">
+                      <Label>PAN Number</Label>
+                      <div className="p-2 bg-gray-50 rounded-md">
+                        <span>{profile.panNumber}</span>
+                      </div>
+                    </div>
+                  )}
+
+                  {profile.gstNumber && (
+                    <div className="space-y-2">
+                      <Label>GST Number</Label>
+                      <div className="p-2 bg-gray-50 rounded-md">
+                        <span>{profile.gstNumber}</span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                <div className="pt-4 border-t">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-gray-600">Registration Date</span>
+                    <span className="font-semibold">{profile.joinDate}</span>
                   </div>
                 </div>
               </CardContent>

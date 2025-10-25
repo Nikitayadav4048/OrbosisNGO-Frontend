@@ -16,11 +16,20 @@ const ContactSection = () => {
   });
 
   const handleSubmit = async(e) => {
-    await axios.post('http://localhost:5000/api/auth/contactUs',{fullName :formData.name, email :formData.email , contactNumber: formData.phone, message: formData.message} )
-    console.log("formData-----", formData);
     e.preventDefault();
-    console.log('Message sent successfully!');
-    setFormData({ name: '', email: '', phone: '', message: '' });
+    try {
+      await axios.post('https://orbosisngo-backend-1.onrender.com/api/auth/contactUs', {
+        fullName: formData.name, 
+        email: formData.email, 
+        contactNumber: formData.phone, 
+        message: formData.message
+      });
+      console.log('Message sent successfully!');
+      setFormData({ name: '', email: '', phone: '', message: '' });
+    } catch (error) {
+      console.error('Error sending message:', error);
+      alert('Failed to send message. Please try again.');
+    }
   };
 
   const handleChange = (e) => {

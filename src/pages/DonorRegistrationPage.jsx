@@ -5,10 +5,12 @@ import { Label } from '../components/ui/label.jsx';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select.jsx';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card.jsx';
 import { ArrowLeft, Heart } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import image from '../assets/qr.jpeg';
+import payImage from '../assets/pay.jpeg';
 
 const DonorRegistrationPage = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     fullName: '',
     organisationName: '',
@@ -25,6 +27,31 @@ const DonorRegistrationPage = () => {
   });
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [submittedData, setSubmittedData] = useState(null);
+  const [countdown, setCountdown] = useState(5);
+
+  // Auto redirect to login after 5 seconds with countdown
+  useEffect(() => {
+    if (showSuccessModal) {
+      setCountdown(5);
+      
+      const countdownInterval = setInterval(() => {
+        setCountdown(prev => {
+          if (prev <= 1) {
+            clearInterval(countdownInterval);
+            setShowSuccessModal(false);
+            navigate('/login');
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+      
+      return () => {
+        clearInterval(countdownInterval);
+      };
+    }
+  }, [showSuccessModal, navigate]);
+
 
   const donationModes = [
     { value: 'bankTransfer', label: 'Bank Transfer' },
@@ -64,16 +91,26 @@ const DonorRegistrationPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('https://orbosisngo-backend-1.onrender.com/api/donation/createOrder', {
+      // Create FormData for file upload support
+      const formDataToSend = new FormData();
+      formDataToSend.append('fullName', formData.fullName);
+      formDataToSend.append('organisationName', formData.organisationName);
+      formDataToSend.append('contactNumber', formData.contactNumber);
+      formDataToSend.append('email', formData.email);
+      formDataToSend.append('address', formData.address);
+      formDataToSend.append('panNumber', formData.panNumber);
+      formDataToSend.append('gstNumber', formData.gstNumber);
+      formDataToSend.append('modeofDonation', formData.modeofDonation);
+      formDataToSend.append('donationAmount', formData.donationAmount);
+      formDataToSend.append('donationFrequency', formData.donationFrequency);
+      formDataToSend.append('consentForUpdate', formData.consentForUpdate);
+      if (formData.uploadPaymentProof) {
+        formDataToSend.append('uploadPaymentProof', formData.uploadPaymentProof);
+      }
+
+      const response = await fetch('https://orbosisngo-backend-1.onrender.com/api/donor/register', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          amount: Number(formData.donationAmount) || 1000,
-          modeofDonation: formData.modeofDonation || "upi",
-          donorName: formData.fullName || "",
-          donorEmail: formData.email || "",
-          donorPhone: formData.contactNumber || ""
-        })
+        body: formDataToSend
       });
 
       if (!response.ok) {
@@ -111,8 +148,8 @@ const DonorRegistrationPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-amber-50 flex items-center justify-center py-8">
-      <div className="max-w-2xl w-full mx-auto px-4">
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-amber-50 flex items-center justify-center py-4 sm:py-8">
+      <div className="max-w-2xl w-full mx-auto px-3 sm:px-4">
 
         {/* Back to Home Link */}
         <div className="mb-6">
@@ -141,13 +178,13 @@ const DonorRegistrationPage = () => {
             </p>
           </CardHeader>
 
-          <CardContent className="px-8 pb-8">
+          <CardContent className="px-4 sm:px-6 lg:px-8 pb-6 sm:pb-8">
             <form onSubmit={handleSubmit} className="space-y-6">
 
               {/* Donor Info */}
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">Donor Information</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="fullName">Name *</Label>
                     <Input id="fullName" name="fullName" value={formData.fullName} onChange={handleChange} required />
@@ -174,7 +211,7 @@ const DonorRegistrationPage = () => {
               {/* Tax Info */}
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">Tax Information</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="panNumber">PAN Number</Label>
                     <Input id="panNumber" name="panNumber" value={formData.panNumber} onChange={handleChange} />
@@ -189,14 +226,14 @@ const DonorRegistrationPage = () => {
               {/* Donation Details */}
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">Donation Details</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="modeofDonation">Preferred Mode</Label>
                     <Select value={formData.modeofDonation} onValueChange={(value) => handleSelectChange('modeofDonation', value)}>
                       <SelectTrigger>
                         <SelectValue placeholder="Select mode" />
                       </SelectTrigger>
-                      <SelectContent className="z-50 bg-white border shadow-lg">
+                      <SelectContent className="z-[60] bg-white border shadow-lg">
                         {donationModes.map((mode) => (
                           <SelectItem key={mode.value} value={mode.value}>
                             {mode.label}
@@ -225,7 +262,7 @@ const DonorRegistrationPage = () => {
                       <SelectTrigger>
                         <SelectValue placeholder="Select frequency" />
                       </SelectTrigger>
-                      <SelectContent className="z-50 bg-white border shadow-lg">
+                      <SelectContent className="z-[60] bg-white border shadow-lg">
                         {frequencies.map((freq) => (
                           <SelectItem key={freq} value={freq}>{freq}</SelectItem>
                         ))}
@@ -240,6 +277,38 @@ const DonorRegistrationPage = () => {
                 </div>
               </div>
 
+              {/* QR Code Payment Section */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Payment Options</h3>
+                <div className="bg-gradient-to-r from-purple-50 to-orange-50 border border-purple-200 rounded-lg p-4 sm:p-6">
+                  <div className="text-center">
+                    <h4 className="text-base sm:text-lg font-semibold text-gray-900 mb-3">Scan QR Code to Donate</h4>
+                    <div className="flex flex-col items-center space-y-3 sm:space-y-4">
+                      <div className="bg-white p-3 sm:p-4 rounded-lg shadow-sm border-2 border-purple-200">
+                        <img 
+                          src={payImage} 
+                          alt="Payment QR Code" 
+                          className="w-40 h-40 sm:w-48 sm:h-48 object-contain"
+                        />
+                      </div>
+                      <div className="text-center">
+                        <p className="text-xs sm:text-sm text-gray-600 mb-2">
+                          Use any UPI app to scan and pay
+                        </p>
+                        <div className="bg-green-50 border border-green-200 rounded-lg p-2 sm:p-3">
+                          <p className="text-xs sm:text-sm font-medium text-green-800">
+                            💰 Donations are covered under 80G of Income Tax Act
+                          </p>
+                          <p className="text-xs text-green-600 mt-1">
+                            Get tax exemption on your donation amount
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
               {/* Consent */}
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">Consent</h3>
@@ -249,7 +318,7 @@ const DonorRegistrationPage = () => {
                     <SelectTrigger>
                       <SelectValue placeholder="Select preference" />
                     </SelectTrigger>
-                    <SelectContent className="z-50 bg-white border shadow-lg">
+                    <SelectContent className="z-[60] bg-white border shadow-lg">
                       {consentOptions.map((option) => (
                         <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
                       ))}
@@ -303,10 +372,33 @@ const DonorRegistrationPage = () => {
                 </div>
               </div>
 
-              <Button onClick={() => setShowSuccessModal(false)} className="w-full bg-purple-600 hover:bg-purple-700">
-                Continue
-              </Button>
+              <div className="space-y-3">
+                <Button 
+                  onClick={() => {
+                    setShowSuccessModal(false);
+                    navigate('/login');
+                  }} 
+                  className="w-full bg-purple-600 hover:bg-purple-700"
+                >
+                  Login to Track Donations
+                </Button>
+              </div>
+              
+              {/* 80G Tax Benefit Information */}
+              <div className="bg-green-50 border border-green-200 rounded-lg p-4 mt-4">
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="text-green-600">💰</span>
+                  <span className="text-sm font-semibold text-green-800">Tax Benefit Available</span>
+                </div>
+                <p className="text-xs text-green-700">
+                  Your donation is eligible for 80G tax deduction. You'll receive a receipt for tax exemption purposes.
+                </p>
+              </div>
+              
               <p className="text-xs text-gray-500 mt-4">Your information has been saved securely</p>
+              <p className="text-xs text-purple-600 mt-2 font-medium">
+                Redirecting to login page in {countdown} seconds...
+              </p>
             </div>
           </div>
         </div>

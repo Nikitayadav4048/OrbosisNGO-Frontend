@@ -5,9 +5,10 @@ import { Label } from '../components/ui/label.jsx';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select.jsx';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card.jsx';
 import { ArrowLeft, Users, Upload } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const VolunteerRegistrationPage = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     fullName: '',
     gender: '',
@@ -55,6 +56,10 @@ const VolunteerRegistrationPage = () => {
           address: '', skills: '', profession: '', areaOfVolunteering: '',
           availability: '', emergencyContactNumber: '', uploadIdProof: null, termsAccepted: false
         });
+        // Redirect to login after successful registration
+        setTimeout(() => {
+          navigate('/login');
+        }, 2000);
       } else {
         alert('Registration failed: ' + (data.message || data.error));
       }
@@ -77,8 +82,8 @@ const VolunteerRegistrationPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-amber-50 py-8">
-      <div className="max-w-2xl mx-auto px-4">
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-amber-50 py-4 sm:py-8">
+      <div className="max-w-2xl mx-auto px-3 sm:px-4">
         <div className="mb-6">
           <Link to="/" className="flex items-center gap-2 text-gray-600 hover:text-purple-600">
             <ArrowLeft className="h-4 w-4" />
@@ -106,7 +111,7 @@ const VolunteerRegistrationPage = () => {
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold text-gray-900">Personal Information</h3>
                 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="fullName">Full Name *</Label>
                     <Input
@@ -124,7 +129,7 @@ const VolunteerRegistrationPage = () => {
                       <SelectTrigger>
                         <SelectValue placeholder="Select gender" />
                       </SelectTrigger>
-                      <SelectContent>
+                      <SelectContent className="z-[60] bg-white border shadow-lg">
                         <SelectItem value="female">Female</SelectItem>
                         <SelectItem value="male">Male</SelectItem>
                         <SelectItem value="other">Other</SelectItem>
@@ -206,14 +211,14 @@ const VolunteerRegistrationPage = () => {
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold text-gray-900">Volunteering Preferences</h3>
                 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="areaOfVolunteering">Preferred Area *</Label>
                     <Select value={formData.areaOfVolunteering} onValueChange={(value) => handleSelectChange('areaOfVolunteering', value)}>
                       <SelectTrigger>
                         <SelectValue placeholder="Select area" />
                       </SelectTrigger>
-                      <SelectContent>
+                      <SelectContent className="z-[60] bg-white border shadow-lg">
                         <SelectItem value="fieldWork">Field Work</SelectItem>
                         <SelectItem value="online">Online</SelectItem>
                         <SelectItem value="fundraising">Fundraising</SelectItem>
@@ -228,7 +233,7 @@ const VolunteerRegistrationPage = () => {
                       <SelectTrigger>
                         <SelectValue placeholder="Select availability" />
                       </SelectTrigger>
-                      <SelectContent>
+                      <SelectContent className="z-[60] bg-white border shadow-lg">
                         <SelectItem value="morning">Morning</SelectItem>
                         <SelectItem value="afternoon">Afternoon</SelectItem>
                         <SelectItem value="evening">Evening</SelectItem>
@@ -251,18 +256,21 @@ const VolunteerRegistrationPage = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="uploadIdProof">Upload ID Proof</Label>
-                  <div className="flex items-center gap-2">
+                  <Label htmlFor="uploadIdProof">Upload ID Proof (Optional)</Label>
+                  <div className="relative">
                     <Input
                       id="uploadIdProof"
                       name="uploadIdProof"
                       type="file"
                       onChange={handleChange}
                       accept=".pdf,.jpg,.jpeg,.png"
-                      className="flex-1"
+                      className="w-full cursor-pointer"
                     />
-                    <Upload className="h-5 w-5 text-gray-400" />
+                    <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                      <Upload className="h-5 w-5 text-gray-400" />
+                    </div>
                   </div>
+                  <p className="text-xs text-gray-500">Accepted formats: PDF, JPG, JPEG, PNG</p>
                 </div>
               </div>
 

@@ -409,7 +409,7 @@ const VolunteerManagementPage = () => {
                             <SelectTrigger className="w-full h-10 px-3 py-2 border border-gray-300 rounded-md bg-white focus:ring-2 focus:ring-purple-500 focus:border-purple-500">
                               <SelectValue placeholder="Select gender" />
                             </SelectTrigger>
-                            <SelectContent className="z-50 bg-white border border-gray-200 rounded-md shadow-lg">
+                            <SelectContent className="z-[60] bg-white border border-gray-200 rounded-md shadow-lg">
                               <SelectItem value="male" className="bg-white hover:bg-gray-50 cursor-pointer">Male</SelectItem>
                               <SelectItem value="female" className="bg-white hover:bg-gray-50 cursor-pointer">Female</SelectItem>
                               <SelectItem value="other" className="bg-white hover:bg-gray-50 cursor-pointer">Other</SelectItem>

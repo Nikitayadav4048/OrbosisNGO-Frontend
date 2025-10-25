@@ -13,6 +13,8 @@ import DonorDashboard from '../components/DonorDashboard.jsx';
 import DonationHistory from '../components/DonationHistory.jsx';
 import DonorProfile from '../components/DonorProfile.jsx';
 import DonorImpact from '../components/DonorImpact.jsx';
+import BeneficiaryDashboard from '../components/BeneficiaryDashboard.jsx';
+import BeneficiaryProfile from '../components/BeneficiaryProfile.jsx';
 import { useNavigate } from 'react-router-dom';
 import { useAppContext } from '../contexts/AppContext.jsx';
 import api from '../config/api.js';
@@ -26,6 +28,12 @@ const DashboardPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [recentActivities, setRecentActivities] = useState([]);
+  const [beneficiaryData, setBeneficiaryData] = useState({
+    programs: [],
+    certificates: [],
+    events: []
+  });
+  const [dataLoading, setDataLoading] = useState(true);
 
 
 
@@ -97,6 +105,28 @@ const DashboardPage = () => {
       clearInterval(interval);
     };
   }, []);
+
+  // Fetch beneficiary data when user is beneficiary
+  useEffect(() => {
+    if (currentUser?.role === 'beneficiary') {
+      const fetchBeneficiaryData = async () => {
+        try {
+          setDataLoading(true);
+          const programs = JSON.parse(localStorage.getItem('beneficiaryPrograms') || '[]');
+          const certificates = JSON.parse(localStorage.getItem('beneficiaryCertificates') || '[]');
+          const events = JSON.parse(localStorage.getItem('availableEvents') || '[]');
+          
+          setBeneficiaryData({ programs, certificates, events });
+        } catch (error) {
+          console.error('Error fetching beneficiary data:', error);
+        } finally {
+          setDataLoading(false);
+        }
+      };
+      
+      fetchBeneficiaryData();
+    }
+  }, [currentUser?.role, activeTab]);
 
 
 
@@ -194,32 +224,17 @@ const DashboardPage = () => {
     
     // Beneficiary-specific content
     if (currentUser?.role === 'beneficiary') {
-      const [beneficiaryData, setBeneficiaryData] = useState({
-        programs: [],
-        certificates: [],
-        events: []
-      });
-      const [dataLoading, setDataLoading] = useState(true);
+      switch (activeTab) {
+        case 'beneficiary-profile':
+          return <BeneficiaryProfile />;
+        case 'dashboard':
+        default:
+          return <BeneficiaryDashboard />;
+      }
+    }
 
-      useEffect(() => {
-        const fetchBeneficiaryData = async () => {
-          try {
-            setDataLoading(true);
-            const programs = JSON.parse(localStorage.getItem('beneficiaryPrograms') || '[]');
-            const certificates = JSON.parse(localStorage.getItem('beneficiaryCertificates') || '[]');
-            const events = JSON.parse(localStorage.getItem('availableEvents') || '[]');
-            
-            setBeneficiaryData({ programs, certificates, events });
-          } catch (error) {
-            console.error('Error fetching beneficiary data:', error);
-          } finally {
-            setDataLoading(false);
-          }
-        };
-        
-        fetchBeneficiaryData();
-      }, [activeTab]);
-
+    // Admin dashboard (existing content)
+    if (currentUser?.role === 'admin') {
       if (dataLoading) {
         return (
           <div className="p-6">
@@ -416,12 +431,12 @@ const DashboardPage = () => {
           </div>
 
         {/* Stats Grid (API-driven) */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6 mb-6 sm:mb-8">
           {stats.map((stat, index) => {
             const Icon = stat.icon;
             return (
               <Card key={index} className="border-0 shadow-sm hover:shadow-md transition-shadow cursor-pointer">
-                <CardContent className="p-4 sm:p-6">
+                <CardContent className="p-3 sm:p-4 lg:p-6">
                   <div className="flex items-center justify-between mb-3 sm:mb-4">
                     <div className={`p-2 sm:p-3 rounded-full ${stat.bgColor}`}>
                       <Icon className={`h-5 w-5 sm:h-6 sm:w-6 ${stat.color}`} />
@@ -446,7 +461,7 @@ const DashboardPage = () => {
         </div>
 
         {/* Analytics Overview */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
           {/* Application Status */}
           <Card className="border-0 shadow-sm">
             <CardHeader className="pb-3">
@@ -569,7 +584,7 @@ const DashboardPage = () => {
         </div>
 
         {/* Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
           {/* Recent Activities */}
           <Card className="border-0 shadow-sm">
             <CardHeader className="flex flex-row items-center justify-between">
@@ -685,11 +700,56 @@ const DashboardPage = () => {
               </div>
             </CardContent>
           </Card>
-        </div>
+
+          {/* Recent Donors */}
+          <Card className="border-0 shadow-sm">
+            <CardHeader>
+              <CardTitle className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                <Heart className="h-5 w-5 text-red-600" />
+                Recent Donors
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4 max-h-80 overflow-y-auto pr-2">
+                {(() => {
+                  const allDonors = JSON.parse(localStorage.getItem('allDonors') || '[]');
+                  const recentDonors = allDonors.slice(0, 5);
+                  
+                  if (recentDonors.length === 0) {
+                    return (
+                      <div className="text-center py-8">
+                        <Heart className="h-12 w-12 text-gray-300 mx-auto mb-3" />
+                        <p className="text-gray-500 text-sm">No donors registered yet</p>
+                      </div>
+                    );
+                  }
+                  
+                  return recentDonors.map((donor) => (
+                    <div key={donor.id} className="flex items-start space-x-3 p-3 rounded-lg hover:bg-gray-50 transition-colors">
+                      <div className="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center mt-1">
+                        <Heart className="h-4 w-4 text-red-600" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-gray-900 truncate">{donor.name}</p>
+                        <p className="text-sm text-gray-600 truncate">{donor.email}</p>
+                        <p className="text-xs text-gray-500 mt-1">
+                          Donated ₹{donor.donationAmount?.toLocaleString() || '0'} • {donor.donationFrequency}
+                        </p>
+                        <p className="text-xs text-gray-400 mt-1">
+                          {new Date(donor.registrationDate).toLocaleDateString()}
+                        </p>
+                      </div>
+                    </div>
+                  ));
+                })()}
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
-    );
-  };
+    </div>
+  );
+};
 
   return (
     <div className="flex h-screen bg-gray-50">
@@ -697,13 +757,15 @@ const DashboardPage = () => {
       <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
       
       {/* Main Content */}
-      <div className="flex-1 flex flex-col overflow-hidden">
+      <div className="flex-1 flex flex-col overflow-hidden lg:ml-0">
         {/* Dashboard Header */}
         <DashboardHeader />
         
         {/* Main Content Area */}
         <div className="flex-1 overflow-auto">
-          {renderContent()}
+          <div className="min-h-full">
+            {renderContent()}
+          </div>
         </div>
       </div>
     </div>

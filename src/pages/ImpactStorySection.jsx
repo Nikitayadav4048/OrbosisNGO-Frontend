@@ -1,5 +1,6 @@
 import React from 'react';
 import { Quote, Heart } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const ImpactStorySection = () => {
   return (
@@ -93,18 +94,24 @@ const ImpactStorySection = () => {
             Help us create more stories like Rani's
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a 
-              href="/donor-registration" 
+            <Link 
+              to="/donor-registration" 
               className="bg-purple-600 hover:bg-purple-700 text-white px-6 sm:px-8 py-3 rounded-lg font-semibold transition-colors text-base sm:text-lg"
             >
               Donate Now
-            </a>
-            <a 
-              href="/volunteer-registration" 
+            </Link>
+            <Link 
+              to="/volunteer-registration" 
               className="border border-purple-600 text-purple-600 hover:bg-purple-100 px-6 sm:px-8 py-3 rounded-lg font-semibold transition-colors text-base sm:text-lg"
             >
               Volunteer With Us
-            </a>
+            </Link>
+            <Link 
+              to="/beneficiary-registration" 
+              className="border border-orange-500 text-orange-600 hover:bg-orange-100 px-6 sm:px-8 py-3 rounded-lg font-semibold transition-colors text-base sm:text-lg"
+            >
+              Get Support
+            </Link>
           </div>
         </div>
       </div>

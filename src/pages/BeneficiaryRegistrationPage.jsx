@@ -5,9 +5,10 @@ import { Label } from '../components/ui/label.jsx';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select.jsx';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card.jsx';
 import { ArrowLeft, Heart } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const BeneficiaryRegistrationPage = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     fullName: '',
     gender: '',
@@ -31,11 +32,41 @@ const BeneficiaryRegistrationPage = () => {
       });
       const data = await response.json();
       if (data.success) {
+        // Save beneficiary data to localStorage
+        const beneficiaryData = {
+          id: Date.now().toString(),
+          fullName: formData.fullName,
+          email: formData.email || '',
+          phone: formData.contactNumber,
+          address: formData.address,
+          gender: formData.gender,
+          age: formData.dob ? new Date().getFullYear() - new Date(formData.dob).getFullYear() : '',
+          occupation: 'Beneficiary',
+          joinDate: new Date().toLocaleDateString(),
+          programsEnrolled: 0,
+          certificatesEarned: 0,
+          eventsAttended: 0,
+          role: 'beneficiary',
+          typesOfSupport: formData.typesOfSupport,
+          specialRequirement: formData.specialRequirement,
+          registrationDate: new Date().toISOString()
+        };
+        
+        // Save to localStorage
+        localStorage.setItem('beneficiaryData', JSON.stringify(beneficiaryData));
+        localStorage.setItem('userData', JSON.stringify(beneficiaryData));
+        localStorage.setItem('authToken', 'beneficiary_' + Date.now());
+        localStorage.setItem('role', 'beneficiary');
+        
         alert('Registration successful! We will contact you soon.');
         setFormData({
           fullName: '', gender: '', dob: '', contactNumber: '', address: '',
           familyDetails: '', typesOfSupport: [], governmentId: '', specialRequirement: '', consent: false
         });
+        // Redirect to dashboard after successful registration
+        setTimeout(() => {
+          navigate('/dashboard');
+        }, 2000);
       } else {
         alert('Registration failed: ' + data.error);
       }
@@ -68,8 +99,8 @@ const BeneficiaryRegistrationPage = () => {
   const supportTypes = ['training', 'education', 'health', 'livelihood'];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-amber-50 py-8">
-      <div className="max-w-2xl mx-auto px-4">
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-amber-50 py-4 sm:py-8">
+      <div className="max-w-2xl mx-auto px-3 sm:px-4">
         <div className="mb-6">
           <Link to="/" className="flex items-center gap-2 text-gray-600 hover:text-purple-600">
             <ArrowLeft className="h-4 w-4" />
@@ -97,7 +128,7 @@ const BeneficiaryRegistrationPage = () => {
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold text-gray-900">Personal Information</h3>
                 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="fullName">Full Name *</Label>
                     <Input

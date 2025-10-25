@@ -111,30 +111,42 @@ const HeroSection = () => {
               </div>
             </div> */}
 
-            {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-              <Link to="/donor-registration" className="w-full sm:w-auto">
+            {/* CTA Buttons - 2x2 Grid Layout */}
+            <div className="grid grid-cols-2 gap-3 sm:gap-4 max-w-md mx-auto lg:mx-0">
+              {/* First Row */}
+              <Link to="/donor-registration" className="w-full">
                 <Button
                   size="lg"
                   variant="outline"
-                  className="w-full sm:w-auto border border-purple-600 cursor-pointer text-purple-600 hover:bg-purple-100 hover:text-black px-6 sm:px-10 py-3 text-base sm:text-[17px] font-medium rounded-lg bg-white"
+                  className="w-full border border-purple-600 cursor-pointer text-purple-600 hover:bg-purple-100 hover:text-black px-4 sm:px-6 py-3 text-sm sm:text-base font-medium rounded-lg bg-white"
                 >
                   Donate Now
                 </Button>
               </Link>
-              <Link to="/volunteer-registration" className="w-full sm:w-auto">
+              <Link to="/volunteer-registration" className="w-full">
                 <Button
                   size="lg"
-                  className="w-full sm:w-auto bg-purple-600 hover:bg-purple-700 text-white px-6 sm:px-10 py-3 text-base sm:text-[17px] font-medium rounded-lg"
+                  className="w-full bg-purple-600 hover:bg-purple-700 text-white px-4 sm:px-6 py-3 text-sm sm:text-base font-medium rounded-lg"
                 >
                   Volunteer With Us
                 </Button>
               </Link>
-              <a href="#about" className="w-full sm:w-auto">
+              
+              {/* Second Row */}
+              <Link to="/beneficiary-registration" className="w-full">
                 <Button
                   size="lg"
                   variant="outline"
-                  className="w-full sm:w-auto border border-orange-500 cursor-pointer text-orange-600 hover:bg-orange-100 hover:text-black px-6 sm:px-10 py-3 text-base sm:text-[17px] font-medium rounded-lg bg-white"
+                  className="w-full border border-orange-500 cursor-pointer text-orange-600 hover:bg-orange-100 hover:text-black px-4 sm:px-6 py-3 text-sm sm:text-base font-medium rounded-lg bg-white"
+                >
+                  Get Support
+                </Button>
+              </Link>
+              <a href="#about" className="w-full">
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="w-full border border-gray-500 cursor-pointer text-gray-600 hover:bg-gray-100 hover:text-black px-4 sm:px-6 py-3 text-sm sm:text-base font-medium rounded-lg bg-white transition-all duration-200"
                 >
                   Know More
                 </Button>

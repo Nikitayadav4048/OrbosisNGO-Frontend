@@ -4,6 +4,7 @@ import { Button } from './ui/button.jsx';
 import { Badge } from './ui/badge.jsx';
 import { Input } from './ui/input.jsx';
 import { Label } from './ui/label.jsx';
+import { useNavigate } from 'react-router-dom';
 import { 
   User, 
   Mail, 
@@ -23,6 +24,7 @@ import {
 import { useAppContext } from '../contexts/AppContext.jsx';
 
 const VolunteerProfile = () => {
+  const navigate = useNavigate();
   const { currentUser } = useAppContext();
   const [isEditing, setIsEditing] = useState(false);
   const [profile, setProfile] = useState({});
@@ -511,7 +513,7 @@ const VolunteerProfile = () => {
                   <Button 
                     variant="outline" 
                     className="w-full justify-start"
-                    onClick={() => window.location.href = '/dashboard?tab=my-tasks'}
+                    onClick={() => navigate('/dashboard')}
                   >
                     <FileText className="h-4 w-4 mr-2" />
                     View My Tasks
@@ -519,7 +521,7 @@ const VolunteerProfile = () => {
                   <Button 
                     variant="outline" 
                     className="w-full justify-start"
-                    onClick={() => window.location.href = '/dashboard?tab=volunteer-events'}
+                    onClick={() => navigate('/dashboard')}
                   >
                     <Calendar className="h-4 w-4 mr-2" />
                     Browse Events
