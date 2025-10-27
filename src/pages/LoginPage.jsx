@@ -306,7 +306,7 @@ const LoginPage = () => {
           <div className="pt-4 sm:pt-6 border-t border-gray-200">
             <p className="text-center text-xs sm:text-sm text-gray-600 mb-3 sm:mb-4">Need help? Contact us:</p>
             <div className="flex flex-col sm:flex-row justify-center gap-3 sm:gap-6">
-              <a href="https://wa.me/1234567890" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center sm:justify-start gap-2 text-green-600 hover:text-green-700 transition-colors">
+              <a href="https://wa.me/918770702092" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center sm:justify-start gap-2 text-green-600 hover:text-green-700 transition-colors">
                 <MessageCircle className="h-4 w-4 sm:h-5 sm:w-5" />
                 <span className="text-xs sm:text-sm">WhatsApp</span>
               </a>
@@ -314,7 +314,7 @@ const LoginPage = () => {
                 <Mail className="h-4 w-4 sm:h-5 sm:w-5" />
                 <span className="text-xs sm:text-sm">Email</span>
               </a>
-              <a href="tel:+1234567890" className="flex items-center justify-center sm:justify-start gap-2 text-purple-600 hover:text-purple-700 transition-colors">
+              <a href="tel:+918770702092" className="flex items-center justify-center sm:justify-start gap-2 text-purple-600 hover:text-purple-700 transition-colors">
                 <Phone className="h-4 w-4 sm:h-5 sm:w-5" />
                 <span className="text-xs sm:text-sm">Call</span>
               </a>
