@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card.
 import { User, Mail, Lock, UserPlus, ArrowLeft, MessageCircle, Phone } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAppContext } from '../contexts/AppContext.jsx';
+import api from '../config/api.js';
 
 const SignupPage = () => {
   const { setCurrentUser } = useAppContext();
@@ -33,28 +34,16 @@ const SignupPage = () => {
     }
 
     try {
-      const response = await fetch('https://orbosisngo-backend-1.onrender.com/api/auth/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          fullName: formData.name,
-          email: formData.email,
-          password: formData.password,
-          role: formData.role
-        })
+      const response = await api.post('/api/auth/register', {
+        fullName: formData.name,
+        email: formData.email,
+        password: formData.password,
+        role: formData.role
       });
 
-      // Check if response is JSON
-      const contentType = response.headers.get('content-type');
-      if (!contentType || !contentType.includes('application/json')) {
-        throw new Error('Backend server is not running. Please start the server and try again.');
-      }
+      const data = response.data;
 
-      const data = await response.json();
-
-      if (response.ok && data.success) {
+      if (response.status === 200 && data.success) {
         // Store token and user data
         if (data.token) {
           localStorage.setItem('authToken', data.token);

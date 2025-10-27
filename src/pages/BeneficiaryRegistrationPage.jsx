@@ -6,9 +6,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card.jsx';
 import { ArrowLeft, Heart } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useAppContext } from '../contexts/AppContext.jsx';
 
 const BeneficiaryRegistrationPage = () => {
   const navigate = useNavigate();
+  const { setCurrentUser } = useAppContext();
   const [formData, setFormData] = useState({
     fullName: '',
     gender: '',
@@ -58,12 +60,15 @@ const BeneficiaryRegistrationPage = () => {
         localStorage.setItem('authToken', 'beneficiary_' + Date.now());
         localStorage.setItem('role', 'beneficiary');
         
+        // Set current user in context
+        setCurrentUser(beneficiaryData);
+        
         alert('Registration successful! We will contact you soon.');
         setFormData({
           fullName: '', gender: '', dob: '', contactNumber: '', address: '',
           familyDetails: '', typesOfSupport: [], governmentId: '', specialRequirement: '', consent: false
         });
-        // Redirect to dashboard after successful registration
+        // Redirect to beneficiary dashboard after successful registration
         setTimeout(() => {
           navigate('/dashboard');
         }, 2000);

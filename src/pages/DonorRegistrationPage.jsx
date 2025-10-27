@@ -6,11 +6,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card.jsx';
 import { ArrowLeft, Heart } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useAppContext } from '../contexts/AppContext.jsx';
 import image from '../assets/qr.jpeg';
 import payImage from '../assets/pay.jpeg';
 
 const DonorRegistrationPage = () => {
   const navigate = useNavigate();
+  const { setCurrentUser } = useAppContext();
   const [formData, setFormData] = useState({
     fullName: '',
     organisationName: '',
@@ -29,7 +31,7 @@ const DonorRegistrationPage = () => {
   const [submittedData, setSubmittedData] = useState(null);
   const [countdown, setCountdown] = useState(5);
 
-  // Auto redirect to login after 5 seconds with countdown
+  // Auto redirect to dashboard after 5 seconds with countdown
   useEffect(() => {
     if (showSuccessModal) {
       setCountdown(5);
@@ -39,7 +41,7 @@ const DonorRegistrationPage = () => {
           if (prev <= 1) {
             clearInterval(countdownInterval);
             setShowSuccessModal(false);
-            navigate('/login');
+            navigate('/dashboard');
             return 0;
           }
           return prev - 1;
@@ -120,6 +122,34 @@ const DonorRegistrationPage = () => {
       const data = await response.json();
 
       if (data.success) {
+        // Save donor data to localStorage for dashboard access
+        const donorData = {
+          id: Date.now().toString(),
+          fullName: formData.fullName,
+          email: formData.email,
+          phone: formData.contactNumber,
+          address: formData.address,
+          organisationName: formData.organisationName,
+          panNumber: formData.panNumber,
+          gstNumber: formData.gstNumber,
+          donationAmount: formData.donationAmount,
+          donationFrequency: formData.donationFrequency,
+          modeofDonation: formData.modeofDonation,
+          consentForUpdate: formData.consentForUpdate,
+          role: 'donor',
+          registrationDate: new Date().toISOString(),
+          joinDate: new Date().toLocaleDateString()
+        };
+        
+        // Save to localStorage
+        localStorage.setItem('donorData', JSON.stringify(donorData));
+        localStorage.setItem('userData', JSON.stringify(donorData));
+        localStorage.setItem('authToken', 'donor_' + Date.now());
+        localStorage.setItem('role', 'donor');
+        
+        // Set current user in context
+        setCurrentUser(donorData);
+        
         setSubmittedData({ ...formData });
         setShowSuccessModal(true);
 
@@ -376,11 +406,11 @@ const DonorRegistrationPage = () => {
                 <Button 
                   onClick={() => {
                     setShowSuccessModal(false);
-                    navigate('/login');
+                    navigate('/dashboard');
                   }} 
                   className="w-full bg-purple-600 hover:bg-purple-700"
                 >
-                  Login to Track Donations
+                  Continue to Dashboard
                 </Button>
               </div>
               
@@ -397,7 +427,7 @@ const DonorRegistrationPage = () => {
               
               <p className="text-xs text-gray-500 mt-4">Your information has been saved securely</p>
               <p className="text-xs text-purple-600 mt-2 font-medium">
-                Redirecting to login page in {countdown} seconds...
+                Redirecting to dashboard in {countdown} seconds...
               </p>
             </div>
           </div>

@@ -1,4 +1,13 @@
 // src/config/api.js
-const API_BASE_URL = 'https://orbosisngo-backend-1.onrender.com';
+import axios from 'axios';
 
-export default API_BASE_URL;
+const API_BASE_URL = 'http://localhost:3002';
+
+const api = axios.create({
+  baseURL: API_BASE_URL,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
+
+export default api;
