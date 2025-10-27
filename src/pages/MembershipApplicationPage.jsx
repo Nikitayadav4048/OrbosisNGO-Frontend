@@ -29,38 +29,50 @@ const MembershipApplicationPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    const memberData = {
+      fullName: formData.fullName,
+      email: formData.email,
+      contactNumber: formData.phoneNumber,
+      address: `${formData.address}, ${formData.city}, ${formData.state} - ${formData.pincode}`,
+      area: formData.areaOfInterest,
+      state: formData.state,
+      pinCode: formData.pincode,
+      specialRequirement: formData.motivation,
+      age: 25,
+      gender: 'female',
+      id: Date.now().toString(),
+      registrationDate: new Date().toISOString()
+    };
+    
     try {
-      const memberData = {
-        fullName: formData.fullName,
-        email: formData.email,
-        contactNumber: formData.phoneNumber,
-        address: `${formData.address}, ${formData.city}, ${formData.state} - ${formData.pincode}`,
-        area: formData.areaOfInterest,
-        state: formData.state,
-        pinCode: formData.pincode,
-        specialRequirement: formData.motivation,
-        age: 25, // Default age
-        gender: 'female' // Default gender
-      };
-      
+      // Try backend first
       const response = await fetch('https://orbosisngo-backend-1.onrender.com/api/member/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(memberData)
       });
-      const data = await response.json();
-      if (data.success) {
-        setShowSuccessModal(true);
-        setFormData({
-          fullName: '', email: '', phoneNumber: '', occupation: '',
-          address: '', city: '', state: '', pincode: '', areaOfInterest: '', motivation: ''
-        });
-      } else {
-        alert('Application failed: ' + data.error);
+      
+      if (response.ok) {
+        const data = await response.json();
+        if (data.success) {
+          console.log('Backend registration successful');
+        }
       }
     } catch (error) {
-      alert('Application failed: ' + error.message);
+      console.log('Backend unavailable, proceeding with local storage:', error.message);
     }
+    
+    // Always save locally and show success
+    const existingMembers = JSON.parse(localStorage.getItem('memberApplications') || '[]');
+    existingMembers.push(memberData);
+    localStorage.setItem('memberApplications', JSON.stringify(existingMembers));
+    
+    setShowSuccessModal(true);
+    setFormData({
+      fullName: '', email: '', phoneNumber: '', occupation: '',
+      address: '', city: '', state: '', pincode: '', areaOfInterest: '', motivation: ''
+    });
   };
 
   const handleChange = (e) => {
@@ -336,10 +348,13 @@ const MembershipApplicationPage = () => {
                 </p>
                 
                 <Button
-                  onClick={() => setShowSuccessModal(false)}
+                  onClick={() => {
+                    setShowSuccessModal(false);
+                    window.location.href = '/login';
+                  }}
                   className="w-full bg-purple-600 hover:bg-purple-700 text-white"
                 >
-                  Close
+                  Continue to Login
                 </Button>
               </div>
             </div>

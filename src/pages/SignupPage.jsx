@@ -62,8 +62,8 @@ const SignupPage = () => {
           localStorage.setItem('userData', JSON.stringify(data.user));
           setCurrentUser(data.user);
         }
-        alert('Account created successfully!');
-        navigate('/dashboard');
+        alert('Account created successfully! Please login to continue.');
+        navigate('/login');
         return;
       }
     } catch (err) {
@@ -76,8 +76,8 @@ const SignupPage = () => {
     localStorage.setItem('role', formData.role);
     setCurrentUser(userData);
     
-    alert('Account created successfully!');
-    navigate('/dashboard');
+    alert('Account created successfully! Please login to continue.');
+    navigate('/login');
     setLoading(false);
   };
 
