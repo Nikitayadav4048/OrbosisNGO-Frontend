@@ -41,7 +41,7 @@ const DonorRegistrationPage = () => {
           if (prev <= 1) {
             clearInterval(countdownInterval);
             setShowSuccessModal(false);
-            navigate('/dashboard');
+            navigate('/');
             return 0;
           }
           return prev - 1;
@@ -403,11 +403,11 @@ const DonorRegistrationPage = () => {
                 <Button 
                   onClick={() => {
                     setShowSuccessModal(false);
-                    navigate('/dashboard');
+                    navigate('/');
                   }} 
                   className="w-full bg-purple-600 hover:bg-purple-700"
                 >
-                  Continue to Dashboard
+                  Back to Home
                 </Button>
               </div>
               
@@ -424,7 +424,7 @@ const DonorRegistrationPage = () => {
               
               <p className="text-xs text-gray-500 mt-4">Your information has been saved securely</p>
               <p className="text-xs text-purple-600 mt-2 font-medium">
-                Redirecting to dashboard in {countdown} seconds...
+                Redirecting to home page in {countdown} seconds...
               </p>
             </div>
           </div>
