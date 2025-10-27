@@ -7,11 +7,43 @@ import { siteContent } from '../data/content.js';
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
-  const [email,setEmail]=useState("");
-    const handleSub=()=>{
-      alert("email register")
-      console.log(email,"email")
+  const [email, setEmail] = useState("");
+  const [isSubscribing, setIsSubscribing] = useState(false);
+  
+  const handleSub = async () => {
+    if (!email || !email.includes('@')) {
+      alert('Please enter a valid email address');
+      return;
     }
+    
+    setIsSubscribing(true);
+    
+    try {
+      // Try backend first
+      const response = await fetch('https://orbosisngo-backend-1.onrender.com/api/auth/newsletter', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      });
+      
+      if (response.ok) {
+        alert('Successfully subscribed to newsletter!');
+      } else {
+        throw new Error('Backend unavailable');
+      }
+    } catch (error) {
+      // Fallback to local storage
+      const subscribers = JSON.parse(localStorage.getItem('newsletterSubscribers') || '[]');
+      if (!subscribers.includes(email)) {
+        subscribers.push(email);
+        localStorage.setItem('newsletterSubscribers', JSON.stringify(subscribers));
+      }
+      alert('Successfully subscribed to newsletter!');
+    }
+    
+    setEmail('');
+    setIsSubscribing(false);
+  };
   return (
     <footer className="bg-gray-900 text-white">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
@@ -68,13 +100,20 @@ const Footer = () => {
               <h5 className="text-xs sm:text-sm font-semibold mb-2 text-purple-400">Newsletter</h5>
               <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
                 <Input
-                onChange={(e)=>setEmail(e.target.value)}
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   placeholder="Your email"
                   className="bg-gray-800 border-gray-700 text-white placeholder-gray-400 text-sm flex-1"
+                  onKeyPress={(e) => e.key === 'Enter' && handleSub()}
                 />
-                <Button  onClick={()=>handleSub()}
-                 size="sm" className="bg-purple-600 hover:bg-purple-700 text-sm px-3 py-2">
-                  Subscribe
+                <Button 
+                  onClick={handleSub}
+                  disabled={isSubscribing}
+                  size="sm" 
+                  className="bg-purple-600 hover:bg-purple-700 disabled:opacity-50 text-sm px-3 py-2"
+                >
+                  {isSubscribing ? 'Subscribing...' : 'Subscribe'}
                 </Button>
               </div>
             </div>

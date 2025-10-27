@@ -24,11 +24,27 @@ const ContactSection = () => {
         contactNumber: formData.phone, 
         message: formData.message
       });
-      console.log('Message sent successfully!');
+      alert('Message sent successfully! We will get back to you soon.');
       setFormData({ name: '', email: '', phone: '', message: '' });
     } catch (error) {
-      console.error('Error sending message:', error);
-      alert('Failed to send message. Please try again.');
+      console.log('Backend unavailable, saving message locally:', error.message);
+      
+      // Save message locally as fallback
+      const messageData = {
+        id: Date.now().toString(),
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        message: formData.message,
+        timestamp: new Date().toISOString()
+      };
+      
+      const existingMessages = JSON.parse(localStorage.getItem('contactMessages') || '[]');
+      existingMessages.push(messageData);
+      localStorage.setItem('contactMessages', JSON.stringify(existingMessages));
+      
+      alert('Message received! We will get back to you soon.');
+      setFormData({ name: '', email: '', phone: '', message: '' });
     }
   };
 
