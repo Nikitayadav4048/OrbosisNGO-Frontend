@@ -269,13 +269,7 @@ const DonorRegistrationPage = () => {
                       </SelectContent>
                     </Select>
 
-                    {/* Show QR image if selected */}
-                    {formData.modeofDonation === 'qr' && (
-                      <div className="mt-4 flex flex-col items-center">
-                        <img className="w-60 h-60" src={image} alt="QR Code" />
-                        <p className="mt-2 text-sm text-gray-600">Scan this QR code to donate</p>
-                      </div>
-                    )}
+
                   </div>
 
                   <div className="space-y-2">
