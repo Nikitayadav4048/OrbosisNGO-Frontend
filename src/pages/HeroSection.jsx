@@ -147,6 +147,16 @@ const HeroSection = () => {
                   size="lg"
                   variant="outline"
                   className="w-full border border-gray-500 cursor-pointer text-gray-600 hover:bg-gray-100 hover:text-black px-4 sm:px-6 py-3 text-sm sm:text-base font-medium rounded-lg bg-white transition-all duration-200"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    const aboutSection = document.getElementById('about');
+                    if (aboutSection) {
+                      aboutSection.scrollIntoView({ behavior: 'smooth' });
+                    } else {
+                      // Fallback if about section not found
+                      window.scrollTo({ top: window.innerHeight, behavior: 'smooth' });
+                    }
+                  }}
                 >
                   Know More
                 </Button>

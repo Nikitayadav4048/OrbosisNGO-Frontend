@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from './ui/card.jsx';
 import { Badge } from './ui/badge.jsx';
 import { Input } from './ui/input.jsx';
 import { Search, Calendar, Heart, Download } from 'lucide-react';
+import { donorApi } from '../services/donorApi.js';
 
 const DonationHistory = () => {
   const [donations, setDonations] = useState([]);
@@ -10,16 +11,24 @@ const DonationHistory = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    setTimeout(() => {
-      setDonations([
-        { id: 1, amount: 5000, date: '2024-01-15', cause: 'Education', method: 'UPI', receipt: 'RCP001', status: 'completed' },
-        { id: 2, amount: 10000, date: '2024-01-10', cause: 'Healthcare', method: 'Bank Transfer', receipt: 'RCP002', status: 'completed' },
-        { id: 3, amount: 2500, date: '2024-01-05', cause: 'Food Support', method: 'Credit Card', receipt: 'RCP003', status: 'completed' },
-        { id: 4, amount: 7500, date: '2023-12-20', cause: 'Education', method: 'UPI', receipt: 'RCP004', status: 'completed' },
-        { id: 5, amount: 15000, date: '2023-12-15', cause: 'Emergency Relief', method: 'Bank Transfer', receipt: 'RCP005', status: 'completed' }
-      ]);
-      setIsLoading(false);
-    }, 1000);
+    const fetchDonations = async () => {
+      try {
+        const data = await donorApi.getDonations();
+        setDonations(data);
+      } catch (error) {
+        console.error('Error fetching donations:', error);
+        // Fallback to mock data
+        setDonations([
+          { id: 1, amount: 5000, date: '2024-01-15', cause: 'Education', method: 'UPI', receipt: 'RCP001', status: 'completed' },
+          { id: 2, amount: 10000, date: '2024-01-10', cause: 'Healthcare', method: 'Bank Transfer', receipt: 'RCP002', status: 'completed' },
+          { id: 3, amount: 2500, date: '2024-01-05', cause: 'Food Support', method: 'Credit Card', receipt: 'RCP003', status: 'completed' }
+        ]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    
+    fetchDonations();
   }, []);
 
   const filteredDonations = donations.filter(donation =>

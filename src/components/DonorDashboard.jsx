@@ -4,60 +4,54 @@ import { Badge } from './ui/badge.jsx';
 import { Heart, TrendingUp, Users, Award, Calendar, DollarSign } from 'lucide-react';
 import useRealTimeData from '../hooks/useRealTimeData.js';
 import RealTimeNotification from './RealTimeNotification.jsx';
+import { donorApi } from '../services/donorApi.js';
 
 const DonorDashboard = () => {
-  const [user, setUser] = useState(null);
-  const [donorData, setDonorData] = useState(null);
+  const [dashboardData, setDashboardData] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
   
   useEffect(() => {
-    // Try to get user data from different localStorage keys
-    const userData = JSON.parse(localStorage.getItem('userData') || '{}');
-    const donorData = JSON.parse(localStorage.getItem('donorData') || '{}');
+    const fetchDashboard = async () => {
+      try {
+        const data = await donorApi.getDashboard();
+        setDashboardData(data);
+      } catch (error) {
+        console.error('Error fetching dashboard:', error);
+        // Fallback to localStorage data
+        const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+        const donorData = JSON.parse(localStorage.getItem('donorData') || '{}');
+        
+        if (Object.keys(userData).length > 0) {
+          setDashboardData(userData);
+        } else if (Object.keys(donorData).length > 0) {
+          setDashboardData(donorData);
+        } else {
+          setDashboardData({
+            name: 'Demo Donor',
+            email: 'demo@donor.com',
+            totalDonated: 5000,
+            donationsCount: 1,
+            beneficiariesHelped: 5,
+            impactScore: 50
+          });
+        }
+      } finally {
+        setIsLoading(false);
+      }
+    };
     
-    if (Object.keys(userData).length > 0) {
-      setUser(userData);
-      setDonorData(userData);
-    } else if (Object.keys(donorData).length > 0) {
-      setUser(donorData);
-      setDonorData(donorData);
-    } else {
-      // Fallback data - create demo donor data if none exists
-      const fallbackUser = {
-        name: 'Demo Donor',
-        email: 'demo@donor.com',
-        totalDonated: 5000,
-        donationsCount: 1,
-        beneficiariesHelped: 5,
-        impactScore: 50,
-        donationAmount: 5000,
-        donationFrequency: 'One-time',
-        donationMode: 'Bank Transfer',
-        registrationDate: new Date().toISOString(),
-        role: 'donor'
-      };
-      setUser(fallbackUser);
-      setDonorData(fallbackUser);
-    }
+    fetchDashboard();
   }, []);
 
-  // Use local data instead of API calls for now
   const stats = {
-    totalDonated: donorData?.donationAmount || 0,
-    donationsCount: 1,
-    beneficiariesHelped: Math.floor((donorData?.donationAmount || 0) / 1000),
-    impactScore: Math.floor((donorData?.donationAmount || 0) / 100),
+    totalDonated: dashboardData?.totalDonated || 0,
+    donationsCount: dashboardData?.donationsCount || 0,
+    beneficiariesHelped: dashboardData?.beneficiariesHelped || 0,
+    impactScore: dashboardData?.impactScore || 0,
     lastUpdated: new Date().toISOString()
   };
   
-  const recentDonations = donorData ? [{
-    id: donorData.id || '1',
-    amount: donorData.donationAmount || 0,
-    cause: 'Women Empowerment',
-    status: 'Completed',
-    date: donorData.registrationDate || new Date().toISOString()
-  }] : [];
-  
-  const isLoading = false; // No longer loading from API
+  const recentDonations = dashboardData?.recentDonations || [];
 
   if (isLoading) {
     return (
@@ -76,10 +70,10 @@ const DonorDashboard = () => {
 
   return (
     <div className="p-6">
-      <RealTimeNotification userId={user?._id} />
+      <RealTimeNotification userId={dashboardData?._id} />
       <div className="max-w-7xl mx-auto">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Welcome back, {user?.name || user?.fullName || 'Donor'}!</h1>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Welcome back, {dashboardData?.name || dashboardData?.fullName || 'Donor'}!</h1>
           <p className="text-gray-600">Track your donations and see the impact you're making in real-time.</p>
           {stats.lastUpdated && (
             <p className="text-sm text-gray-500 mt-1">

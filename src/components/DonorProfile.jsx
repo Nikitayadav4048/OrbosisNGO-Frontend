@@ -4,6 +4,7 @@ import { Button } from './ui/button.jsx';
 import { Input } from './ui/input.jsx';
 import { Label } from './ui/label.jsx';
 import { User, Mail, Phone, MapPin, Edit, Save, X, Heart } from 'lucide-react';
+import { donorApi } from '../services/donorApi.js';
 
 const DonorProfile = () => {
   const [isEditing, setIsEditing] = useState(false);
@@ -12,76 +13,53 @@ const DonorProfile = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Load donor data from localStorage
-    const donorData = localStorage.getItem('donorData');
-    if (donorData) {
+    const fetchProfile = async () => {
       try {
-        const parsedData = JSON.parse(donorData);
-        const profileData = {
-          fullName: parsedData.name || 'Donor',
-          email: parsedData.email || '',
-          phone: parsedData.phone || '',
-          address: parsedData.address || '',
-          organization: parsedData.organization || '',
-          joinDate: new Date(parsedData.registrationDate).toLocaleDateString(),
-          totalDonated: parsedData.donationAmount || 0,
-          donationsCount: 1,
-          donationFrequency: parsedData.donationFrequency || 'One-time',
-          donationMode: parsedData.donationMode || 'Bank Transfer',
-          panNumber: parsedData.panNumber || '',
-          gstNumber: parsedData.gstNumber || '',
-          preferredCauses: ['Women Empowerment']
-        };
-        setProfile(profileData);
-        setEditedProfile(profileData);
+        const data = await donorApi.getProfile();
+        setProfile(data);
+        setEditedProfile(data);
       } catch (error) {
-        console.error('Error parsing donor data:', error);
-        // Fallback to mock data
-        const mockProfile = {
-          fullName: 'Donor',
-          email: '',
-          phone: '',
-          address: '',
-          organization: '',
-          joinDate: new Date().toLocaleDateString(),
-          totalDonated: 0,
-          donationsCount: 0,
-          donationFrequency: 'One-time',
-          donationMode: 'Bank Transfer',
-          panNumber: '',
-          gstNumber: '',
-          preferredCauses: ['Women Empowerment']
-        };
-        setProfile(mockProfile);
-        setEditedProfile(mockProfile);
+        console.error('Error fetching profile:', error);
+        // Fallback to localStorage
+        const donorData = localStorage.getItem('donorData');
+        if (donorData) {
+          const parsedData = JSON.parse(donorData);
+          const profileData = {
+            fullName: parsedData.name || 'Donor',
+            email: parsedData.email || '',
+            phone: parsedData.phone || '',
+            address: parsedData.address || '',
+            organization: parsedData.organization || '',
+            joinDate: new Date(parsedData.registrationDate).toLocaleDateString(),
+            totalDonated: parsedData.donationAmount || 0,
+            donationsCount: 1,
+            donationFrequency: parsedData.donationFrequency || 'One-time',
+            donationMode: parsedData.donationMode || 'Bank Transfer',
+            panNumber: parsedData.panNumber || '',
+            gstNumber: parsedData.gstNumber || '',
+            preferredCauses: ['Women Empowerment']
+          };
+          setProfile(profileData);
+          setEditedProfile(profileData);
+        }
+      } finally {
+        setIsLoading(false);
       }
-    } else {
-      // No donor data found, show empty profile
-      const emptyProfile = {
-        fullName: 'Donor',
-        email: '',
-        phone: '',
-        address: '',
-        organization: '',
-        joinDate: new Date().toLocaleDateString(),
-        totalDonated: 0,
-        donationsCount: 0,
-        donationFrequency: 'One-time',
-        donationMode: 'Bank Transfer',
-        panNumber: '',
-        gstNumber: '',
-        preferredCauses: ['Women Empowerment']
-      };
-      setProfile(emptyProfile);
-      setEditedProfile(emptyProfile);
-    }
-    setIsLoading(false);
+    };
+    
+    fetchProfile();
   }, []);
 
-  const handleSave = () => {
-    setProfile(editedProfile);
-    setIsEditing(false);
-    alert('Profile updated successfully!');
+  const handleSave = async () => {
+    try {
+      await donorApi.updateProfile(editedProfile);
+      setProfile(editedProfile);
+      setIsEditing(false);
+      alert('Profile updated successfully!');
+    } catch (error) {
+      console.error('Error updating profile:', error);
+      alert('Failed to update profile. Please try again.');
+    }
   };
 
   const handleCancel = () => {

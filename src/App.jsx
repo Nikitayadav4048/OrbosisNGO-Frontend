@@ -32,6 +32,7 @@ import WhatsAppButton from './components/WhatsAppButton'
 import TermsPage from './pages/TermsPage'
 import PrivacyPage from './pages/PrivacyPage'
 import BeneficiaryRegistrationPage from './pages/BeneficiaryRegistrationPage'
+import NotFoundPage from './pages/NotFoundPage'
 
 // Main App Component with Sidebar Logic
 const AppContent = () => {
@@ -67,6 +68,7 @@ const AppContent = () => {
           <Route path="/terms" element={<TermsPage />} />
           <Route path="/privacy" element={<PrivacyPage />} />
           <Route path="/beneficiary-registration" element={<BeneficiaryRegistrationPage />} />
+          <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </Router>
     </AppProvider>

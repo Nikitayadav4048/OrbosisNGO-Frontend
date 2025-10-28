@@ -6,21 +6,40 @@ import { User, Mail, Phone, MapPin, Edit } from 'lucide-react';
 import DashboardHeader from '../components/DashboardHeader.jsx';
 import Sidebar from '../components/Sidebar.jsx';
 import { useAppContext } from '../contexts/AppContext.jsx';
+import Modal from '../components/ui/modal.jsx';
 
 const ProfilePage = () => {
   const { currentUser } = useAppContext();
   const [activeTab, setActiveTab] = useState('profile');
   const [isEditing, setIsEditing] = useState(false);
+  const [showSaveModal, setShowSaveModal] = useState(false);
   const [formData, setFormData] = useState({
-    name: currentUser?.name || '',
+    name: currentUser?.fullName || currentUser?.name || '',
     email: currentUser?.email || '',
-    phone: '+91 98765 43210',
-    address: '123 Main Street, Mumbai'
+    phone: currentUser?.phone || currentUser?.contactNumber || '+91 98765 43210',
+    address: currentUser?.address || '123 Main Street, Mumbai'
   });
 
   const handleSave = () => {
+    // Validation
+    if (!formData.name || !formData.email) {
+      alert('Name and email are required');
+      return;
+    }
+    
+    // Save to localStorage
+    const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+    const updatedUser = {
+      ...userData,
+      fullName: formData.name,
+      email: formData.email,
+      phone: formData.phone,
+      address: formData.address
+    };
+    
+    localStorage.setItem('userData', JSON.stringify(updatedUser));
     setIsEditing(false);
-    // Save logic here
+    setShowSaveModal(true);
   };
 
   return (
@@ -43,7 +62,18 @@ const ProfilePage = () => {
                       Personal Information
                     </CardTitle>
                     <Button
-                      onClick={() => setIsEditing(!isEditing)}
+                      onClick={() => {
+                        if (isEditing) {
+                          // Reset form data when canceling
+                          setFormData({
+                            name: currentUser?.fullName || currentUser?.name || '',
+                            email: currentUser?.email || '',
+                            phone: currentUser?.phone || currentUser?.contactNumber || '+91 98765 43210',
+                            address: currentUser?.address || '123 Main Street, Mumbai'
+                          });
+                        }
+                        setIsEditing(!isEditing);
+                      }}
                       variant="outline"
                       size="sm"
                     >
@@ -133,6 +163,26 @@ const ProfilePage = () => {
           </div>
         </div>
       </div>
+      
+      {/* Save Success Modal */}
+      <Modal 
+        isOpen={showSaveModal} 
+        onClose={() => setShowSaveModal(false)}
+        title="Profile Updated"
+      >
+        <div className="text-center">
+          <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <span className="text-2xl">✅</span>
+          </div>
+          <p className="text-gray-700 mb-6">Your profile has been updated successfully!</p>
+          <Button 
+            onClick={() => setShowSaveModal(false)}
+            className="w-full bg-green-600 hover:bg-green-700 text-white"
+          >
+            OK
+          </Button>
+        </div>
+      </Modal>
     </>
   );
 };

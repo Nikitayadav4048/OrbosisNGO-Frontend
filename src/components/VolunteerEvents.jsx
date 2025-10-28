@@ -15,6 +15,7 @@ import {
   Star,
   ExternalLink
 } from 'lucide-react';
+import Modal from './ui/modal.jsx';
 
 const VolunteerEvents = () => {
   const [events, setEvents] = useState([]);
@@ -22,6 +23,8 @@ const VolunteerEvents = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [isLoading, setIsLoading] = useState(true);
+  const [selectedEvent, setSelectedEvent] = useState(null);
+  const [showRegisterModal, setShowRegisterModal] = useState('');
 
   useEffect(() => {
     // Simulate API call
@@ -170,14 +173,14 @@ const VolunteerEvents = () => {
     setEvents(prev => prev.map(event => 
       event.id === eventId ? { ...event, isRegistered: true, participants: event.participants + 1 } : event
     ));
-    alert('Successfully registered for the event!');
+    setShowRegisterModal('Successfully registered for the event!');
   };
 
   const handleUnregister = (eventId) => {
     setEvents(prev => prev.map(event => 
       event.id === eventId ? { ...event, isRegistered: false, participants: event.participants - 1 } : event
     ));
-    alert('Successfully unregistered from the event.');
+    setShowRegisterModal('Successfully unregistered from the event.');
   };
 
   const isRegistrationOpen = (event) => {
@@ -379,7 +382,11 @@ const VolunteerEvents = () => {
                           >
                             Unregister
                           </Button>
-                          <Button size="sm" className="bg-purple-600 hover:bg-purple-700 text-white">
+                          <Button 
+                            size="sm" 
+                            className="bg-purple-600 hover:bg-purple-700 text-white"
+                            onClick={() => setSelectedEvent(event)}
+                          >
                             <ExternalLink className="h-4 w-4 mr-2" />
                             View Details
                           </Button>
@@ -393,7 +400,11 @@ const VolunteerEvents = () => {
                           >
                             Register Now
                           </Button>
-                          <Button size="sm" variant="outline">
+                          <Button 
+                            size="sm" 
+                            variant="outline"
+                            onClick={() => setSelectedEvent(event)}
+                          >
                             View Details
                           </Button>
                         </>
@@ -403,7 +414,11 @@ const VolunteerEvents = () => {
                             <AlertCircle className="h-4 w-4" />
                             <span>Registration Closed</span>
                           </div>
-                          <Button size="sm" variant="outline">
+                          <Button 
+                            size="sm" 
+                            variant="outline"
+                            onClick={() => setSelectedEvent(event)}
+                          >
                             View Details
                           </Button>
                         </>
@@ -415,6 +430,73 @@ const VolunteerEvents = () => {
             ))
           )}
         </div>
+
+        {/* Registration Success Modal */}
+        <Modal 
+          isOpen={!!showRegisterModal} 
+          onClose={() => setShowRegisterModal('')}
+          title="Registration Status"
+        >
+          <div className="text-center">
+            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <CheckCircle className="h-8 w-8 text-green-600" />
+            </div>
+            <p className="text-gray-700 mb-6">{showRegisterModal}</p>
+            <Button 
+              onClick={() => setShowRegisterModal('')}
+              className="w-full bg-green-600 hover:bg-green-700 text-white"
+            >
+              OK
+            </Button>
+          </div>
+        </Modal>
+
+        {/* Event Details Modal */}
+        <Modal 
+          isOpen={!!selectedEvent} 
+          onClose={() => setSelectedEvent(null)}
+          title="Event Details"
+        >
+          {selectedEvent && (
+            <div className="space-y-4">
+              <div>
+                <h4 className="font-semibold text-gray-900 mb-2">{selectedEvent.title}</h4>
+                <p className="text-gray-600 text-sm">{selectedEvent.description}</p>
+              </div>
+              
+              <div className="grid grid-cols-2 gap-4 text-sm">
+                <div>
+                  <span className="font-medium text-gray-700">Date:</span>
+                  <p className="text-gray-600">{new Date(selectedEvent.date).toLocaleDateString()}</p>
+                </div>
+                <div>
+                  <span className="font-medium text-gray-700">Time:</span>
+                  <p className="text-gray-600">{selectedEvent.time}</p>
+                </div>
+                <div>
+                  <span className="font-medium text-gray-700">Location:</span>
+                  <p className="text-gray-600">{selectedEvent.location}</p>
+                </div>
+                <div>
+                  <span className="font-medium text-gray-700">Organizer:</span>
+                  <p className="text-gray-600">{selectedEvent.organizer}</p>
+                </div>
+              </div>
+              
+              <div className="bg-gray-50 rounded-lg p-3">
+                <span className="font-medium text-gray-700">Participants:</span>
+                <p className="text-gray-600">{selectedEvent.participants}/{selectedEvent.maxParticipants}</p>
+              </div>
+              
+              <Button 
+                onClick={() => setSelectedEvent(null)}
+                className="w-full bg-purple-600 hover:bg-purple-700 text-white"
+              >
+                Close
+              </Button>
+            </div>
+          )}
+        </Modal>
       </div>
     </div>
   );

@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card.
 import { ArrowLeft, Users, Upload } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAppContext } from '../contexts/AppContext.jsx';
+import Modal from '../components/ui/modal.jsx';
 
 const VolunteerRegistrationPage = () => {
   const navigate = useNavigate();
@@ -26,9 +27,37 @@ const VolunteerRegistrationPage = () => {
     uploadIdProof: null,
     termsAccepted: false
   });
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [showErrorModal, setShowErrorModal] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Validation
+    if (!formData.fullName || !formData.email || !formData.contactNumber || !formData.dob) {
+      setShowErrorModal('Please fill in all required fields');
+      return;
+    }
+    
+    if (!formData.gender) {
+      setShowErrorModal('Please select your gender');
+      return;
+    }
+    
+    if (!formData.areaOfVolunteering) {
+      setShowErrorModal('Please select your preferred area of volunteering');
+      return;
+    }
+    
+    if (!formData.availability) {
+      setShowErrorModal('Please select your availability');
+      return;
+    }
+    
+    if (!formData.termsAccepted) {
+      setShowErrorModal('Please accept the terms and conditions');
+      return;
+    }
     
     // Save volunteer data to localStorage for dashboard access
     const volunteerData = {
@@ -94,16 +123,12 @@ const VolunteerRegistrationPage = () => {
     // Set current user in context
     setCurrentUser(volunteerData);
     
-    alert('Registration successful! Welcome to our volunteer community.');
+    setShowSuccessModal(true);
     setFormData({
       fullName: '', gender: '', dob: '', contactNumber: '', email: '',
       address: '', skills: '', profession: '', areaOfVolunteering: '',
       availability: '', emergencyContactNumber: '', uploadIdProof: null, termsAccepted: false
     });
-    // Redirect to dashboard after successful registration
-    setTimeout(() => {
-      navigate('/dashboard');
-    }, 2000);
   };
 
   const handleChange = (e) => {
@@ -301,13 +326,16 @@ const VolunteerRegistrationPage = () => {
                       type="file"
                       onChange={handleChange}
                       accept=".pdf,.jpg,.jpeg,.png"
-                      className="w-full cursor-pointer"
+                      className="w-full cursor-pointer file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100"
                     />
                     <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
                       <Upload className="h-5 w-5 text-gray-400" />
                     </div>
                   </div>
-                  <p className="text-xs text-gray-500">Accepted formats: PDF, JPG, JPEG, PNG</p>
+                  <p className="text-xs text-gray-500">Accepted formats: PDF, JPG, JPEG, PNG (Max 5MB)</p>
+                  {formData.uploadIdProof && (
+                    <p className="text-xs text-green-600">✓ File selected: {formData.uploadIdProof.name}</p>
+                  )}
                 </div>
               </div>
 
@@ -339,6 +367,65 @@ const VolunteerRegistrationPage = () => {
           </CardContent>
         </Card>
       </div>
+
+      {/* Error Modal */}
+      <Modal 
+        isOpen={!!showErrorModal} 
+        onClose={() => setShowErrorModal('')}
+        title="Validation Error"
+      >
+        <div className="text-center">
+          <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <span className="text-2xl">⚠️</span>
+          </div>
+          <p className="text-gray-700 mb-6">{showErrorModal}</p>
+          <Button 
+            onClick={() => setShowErrorModal('')}
+            className="w-full bg-red-600 hover:bg-red-700 text-white"
+          >
+            OK
+          </Button>
+        </div>
+      </Modal>
+
+      {/* Success Modal */}
+      <Modal 
+        isOpen={showSuccessModal} 
+        onClose={() => {
+          setShowSuccessModal(false);
+          navigate('/dashboard');
+        }}
+        title="Registration Successful"
+      >
+        <div className="text-center">
+          <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <Users className="h-10 w-10 text-green-600" />
+          </div>
+          <h3 className="text-xl font-bold text-gray-900 mb-2">Welcome! 🎉</h3>
+          <p className="text-gray-600 mb-6">Your volunteer registration has been submitted successfully!</p>
+
+          <Button 
+            onClick={() => {
+              setShowSuccessModal(false);
+              navigate('/dashboard');
+            }} 
+            className="w-full bg-purple-600 hover:bg-purple-700 text-white mb-3"
+          >
+            Go to Dashboard
+          </Button>
+          
+          <Button 
+            onClick={() => {
+              setShowSuccessModal(false);
+              navigate('/');
+            }} 
+            variant="outline"
+            className="w-full"
+          >
+            Back to Home
+          </Button>
+        </div>
+      </Modal>
     </div>
   );
 };

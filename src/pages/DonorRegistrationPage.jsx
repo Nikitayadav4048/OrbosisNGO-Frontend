@@ -9,6 +9,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAppContext } from '../contexts/AppContext.jsx';
 import image from '../assets/qr.jpeg';
 import payImage from '../assets/pay.jpeg';
+import Modal from '../components/ui/modal.jsx';
 
 const DonorRegistrationPage = () => {
   const navigate = useNavigate();
@@ -28,6 +29,7 @@ const DonorRegistrationPage = () => {
     uploadPaymentProof: null
   });
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [showErrorModal, setShowErrorModal] = useState('');
   const [submittedData, setSubmittedData] = useState(null);
   const [countdown, setCountdown] = useState(5);
 
@@ -41,7 +43,7 @@ const DonorRegistrationPage = () => {
           if (prev <= 1) {
             clearInterval(countdownInterval);
             setShowSuccessModal(false);
-            navigate('/');
+            navigate('/dashboard');
             return 0;
           }
           return prev - 1;
@@ -57,17 +59,28 @@ const DonorRegistrationPage = () => {
 
   const donationModes = [
     { value: 'bankTransfer', label: 'Bank Transfer' },
-    { value: 'upi', label: 'UPI' },
+    { value: 'upi', label: 'UPI Payment' },
     { value: 'cheque', label: 'Cheque' },
     { value: 'cash', label: 'Cash' },
-    { value: 'qr', label: 'QR' } // fixed typo
+    { value: 'qr', label: 'QR Code Payment' },
+    { value: 'netBanking', label: 'Net Banking' },
+    { value: 'creditCard', label: 'Credit Card' },
+    { value: 'debitCard', label: 'Debit Card' }
   ];
 
-  const frequencies = ['One-time', 'Monthly', 'Quarterly', 'Yearly'];
+  const frequencies = [
+    { value: 'one-time', label: 'One-time' },
+    { value: 'monthly', label: 'Monthly' },
+    { value: 'quarterly', label: 'Quarterly' },
+    { value: 'yearly', label: 'Yearly' },
+    { value: 'weekly', label: 'Weekly' }
+  ];
 
   const consentOptions = [
-    { value: 'email', label: 'Email' },
-    { value: 'whatsapp', label: 'WhatsApp' },
+    { value: 'email', label: 'Email Updates' },
+    { value: 'whatsapp', label: 'WhatsApp Updates' },
+    { value: 'sms', label: 'SMS Updates' },
+    { value: 'phone', label: 'Phone Updates' },
     { value: 'none', label: 'No Updates' }
   ];
 
@@ -92,6 +105,27 @@ const DonorRegistrationPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Validation
+    if (!formData.fullName || !formData.email || !formData.contactNumber) {
+      setShowErrorModal('Please fill in all required fields');
+      return;
+    }
+    
+    if (!formData.modeofDonation) {
+      setShowErrorModal('Please select a donation mode');
+      return;
+    }
+    
+    if (!formData.donationFrequency) {
+      setShowErrorModal('Please select donation frequency');
+      return;
+    }
+    
+    if (!formData.consentForUpdate) {
+      setShowErrorModal('Please select your consent preference for updates');
+      return;
+    }
     
     // Save donor data to localStorage for dashboard access
     const donorData = {
@@ -285,7 +319,7 @@ const DonorRegistrationPage = () => {
                       </SelectTrigger>
                       <SelectContent className="z-[60] bg-white border shadow-lg">
                         {frequencies.map((freq) => (
-                          <SelectItem key={freq} value={freq}>{freq}</SelectItem>
+                          <SelectItem key={freq.value} value={freq.value}>{freq.label}</SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
@@ -359,71 +393,81 @@ const DonorRegistrationPage = () => {
         </Card>
       </div>
 
+      {/* Error Modal */}
+      <Modal 
+        isOpen={!!showErrorModal} 
+        onClose={() => setShowErrorModal('')}
+        title="Validation Error"
+      >
+        <div className="text-center">
+          <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <span className="text-2xl">⚠️</span>
+          </div>
+          <p className="text-gray-700 mb-6">{showErrorModal}</p>
+          <Button 
+            onClick={() => setShowErrorModal('')}
+            className="w-full bg-red-600 hover:bg-red-700 text-white"
+          >
+            OK
+          </Button>
+        </div>
+      </Modal>
+
       {/* Success Modal */}
-      {showSuccessModal && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl max-w-md w-full mx-4 shadow-2xl">
-            <div className="p-6 text-center">
-              <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4 animate-pulse">
-                <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center">
-                  <Heart className="h-10 w-10 text-white" />
-                </div>
-              </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-2">Thank You! 🙏</h3>
-              <p className="text-gray-600 mb-6">Your donation registration has been submitted successfully. We appreciate your support for women empowerment!</p>
+      <Modal 
+        isOpen={showSuccessModal} 
+        onClose={() => {
+          setShowSuccessModal(false);
+          navigate('/');
+        }}
+        title="Registration Successful"
+      >
+        <div className="text-center">
+          <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <Heart className="h-10 w-10 text-green-600" />
+          </div>
+          <h3 className="text-xl font-bold text-gray-900 mb-2">Thank You! 🙏</h3>
+          <p className="text-gray-600 mb-6">Your donation registration has been submitted successfully!</p>
 
-              <div className="bg-gradient-to-r from-purple-50 to-amber-50 rounded-lg p-4 mb-6">
-                <div className="flex items-center justify-center gap-2 mb-3">
-                  <Heart className="h-5 w-5 text-purple-600" />
-                  <span className="font-semibold text-purple-800">Donation Registered</span>
-                </div>
-                <div className="space-y-2 text-sm">
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Amount:</span>
-                    <span className="font-bold text-green-700">₹{submittedData?.donationAmount || 'Not specified'}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Frequency:</span>
-                    <span className="font-medium">{submittedData?.donationFrequency || 'One-time'}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Mode:</span>
-                    <span className="font-medium">{submittedData?.modeofDonation ? submittedData.modeofDonation.charAt(0).toUpperCase() + submittedData.modeofDonation.slice(1) : 'Not specified'}</span>
-                  </div>
-                </div>
+          <div className="bg-gradient-to-r from-purple-50 to-amber-50 rounded-lg p-4 mb-6">
+            <div className="space-y-2 text-sm">
+              <div className="flex justify-between">
+                <span className="text-gray-600">Amount:</span>
+                <span className="font-bold text-green-700">₹{submittedData?.donationAmount || 'Not specified'}</span>
               </div>
-
-              <div className="space-y-3">
-                <Button 
-                  onClick={() => {
-                    setShowSuccessModal(false);
-                    navigate('/');
-                  }} 
-                  className="w-full bg-purple-600 hover:bg-purple-700"
-                >
-                  Back to Home
-                </Button>
+              <div className="flex justify-between">
+                <span className="text-gray-600">Frequency:</span>
+                <span className="font-medium">{submittedData?.donationFrequency || 'One-time'}</span>
               </div>
-              
-              {/* 80G Tax Benefit Information */}
-              <div className="bg-green-50 border border-green-200 rounded-lg p-4 mt-4">
-                <div className="flex items-center gap-2 mb-2">
-                  <span className="text-green-600">💰</span>
-                  <span className="text-sm font-semibold text-green-800">Tax Benefit Available</span>
-                </div>
-                <p className="text-xs text-green-700">
-                  Your donation is eligible for 80G tax deduction. You'll receive a receipt for tax exemption purposes.
-                </p>
-              </div>
-              
-              <p className="text-xs text-gray-500 mt-4">Your information has been saved securely</p>
-              <p className="text-xs text-purple-600 mt-2 font-medium">
-                Redirecting to home page in {countdown} seconds...
-              </p>
             </div>
           </div>
+
+          <Button 
+            onClick={() => {
+              setShowSuccessModal(false);
+              navigate('/dashboard');
+            }} 
+            className="w-full bg-purple-600 hover:bg-purple-700 text-white mb-3"
+          >
+            Go to Dashboard
+          </Button>
+          
+          <Button 
+            onClick={() => {
+              setShowSuccessModal(false);
+              navigate('/');
+            }} 
+            variant="outline"
+            className="w-full"
+          >
+            Back to Home
+          </Button>
+          
+          <p className="text-xs text-purple-600 mt-4 font-medium">
+            Auto-redirecting in {countdown} seconds...
+          </p>
         </div>
-      )}
+      </Modal>
     </div>
   );
 };
