@@ -110,6 +110,12 @@ const Sidebar = ({ activeTab, setActiveTab }) => {
             roles: ['donor']
         },
         {
+            id: 'donor-registration',
+            label: 'Donate Now',
+            icon: Heart,
+            roles: ['donor']
+        },
+        {
             id: 'donor-profile',
             label: 'My Profile',
             icon: Users,

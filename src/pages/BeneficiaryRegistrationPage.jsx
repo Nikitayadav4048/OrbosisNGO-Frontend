@@ -150,19 +150,20 @@ const BeneficiaryRegistrationPage = () => {
                     />
                   </div>
 
-                  <div className="space-y-2">
-                    <Label htmlFor="gender">Gender *</Label>
-                    <Select value={formData.gender} onValueChange={(value) => handleSelectChange('gender', value)}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select gender" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="female">Female</SelectItem>
-                        <SelectItem value="male">Male</SelectItem>
-                        <SelectItem value="other">Other</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
+                  
+                   <div className="space-y-2">
+                                      <Label htmlFor="gender">Gender *</Label>
+                                      <Select value={formData.gender} onValueChange={(value) => handleSelectChange('gender', value)}>
+                                        <SelectTrigger>
+                                          <SelectValue placeholder="Select gender" />
+                                        </SelectTrigger>
+                                        <SelectContent className="z-[60] bg-white border shadow-lg">
+                                          <SelectItem value="female">Female</SelectItem>
+                                          <SelectItem value="male">Male</SelectItem>
+                                          <SelectItem value="other">Other</SelectItem>
+                                        </SelectContent>
+                                      </Select>
+                                    </div>
 
                   <div className="space-y-2">
                     <Label htmlFor="dob">Date of Birth *</Label>

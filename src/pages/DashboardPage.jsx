@@ -19,6 +19,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAppContext } from '../contexts/AppContext.jsx';
 import api from '../config/api.js';
 import { reportGenerator } from '../utils/reportGenerator.js';
+import DonorRegistrationPage from './DonorRegistrationPage.jsx';
 
 const DashboardPage = () => {
   const navigate = useNavigate();
@@ -214,6 +215,8 @@ const DashboardPage = () => {
           return <DonationHistory />;
         case 'donor-profile':
           return <DonorProfile />;
+        case 'donor-registration':
+          return <DonorRegistrationPage />
         case 'donor-impact':
           return <DonorImpact />;
         case 'dashboard':

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Button } from '../components/ui/button.jsx';
 import { ArrowRight, Users, Award, Heart, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext.jsx';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 // Import images
 import img1 from '../assets/women-empowerment/img1.jpg';
@@ -30,8 +30,13 @@ const HeroSection = () => {
     img8,
     img9
   ];
-
+  
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  
+  const navigate = useNavigate();
+  const handeClick = () =>{
+     navigate('/signup', { state: "Donor" });
+  }
 
   // Auto slide functionality
   useEffect(() => {
@@ -114,15 +119,16 @@ const HeroSection = () => {
             {/* CTA Buttons - 2x2 Grid Layout */}
             <div className="grid grid-cols-2 gap-3 sm:gap-4 max-w-md mx-auto lg:mx-0">
               {/* First Row */}
-              <Link to="/donor-registration" className="w-full">
+              {/* <Link to="/signup" className="w-full"> */}
                 <Button
+              onClick={()=>handeClick()}
                   size="lg"
                   variant="outline"
                   className="w-full border border-purple-600 cursor-pointer text-purple-600 hover:bg-purple-100 hover:text-black px-4 sm:px-6 py-3 text-sm sm:text-base font-medium rounded-lg bg-white"
                 >
                   Donate Now
                 </Button>
-              </Link>
+              {/* </Link> */}
               <Link to="/volunteer-registration" className="w-full">
                 <Button
                   size="lg"

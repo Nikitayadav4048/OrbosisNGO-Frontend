@@ -33,6 +33,8 @@ import TermsPage from './pages/TermsPage'
 import PrivacyPage from './pages/PrivacyPage'
 import BeneficiaryRegistrationPage from './pages/BeneficiaryRegistrationPage'
 import NotFoundPage from './pages/NotFoundPage'
+import VolunteerEvents from './components/VolunteerEvents'
+import MyTasks from './components/MyTasks'
 
 // Main App Component with Sidebar Logic
 const AppContent = () => {
@@ -69,6 +71,10 @@ const AppContent = () => {
           <Route path="/privacy" element={<PrivacyPage />} />
           <Route path="/beneficiary-registration" element={<BeneficiaryRegistrationPage />} />
           <Route path="*" element={<NotFoundPage />} />
+           <Route path ="/VolunteerEvents" element={<VolunteerEvents/>} />
+
+           <Route path ="/MyTasks" element={<MyTasks/>} />
+
         </Routes>
       </Router>
     </AppProvider>

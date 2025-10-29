@@ -501,7 +501,7 @@ console.log("respone",response)
             </Card>
 
             {/* Quick Actions */}
-            <Card className="border-0 shadow-sm">
+            {/* <Card className="border-0 shadow-sm">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Clock className="h-5 w-5 text-orange-600" />
@@ -536,7 +536,7 @@ console.log("respone",response)
                   </Button>
                 </div>
               </CardContent>
-            </Card>
+            </Card> */}
           </div>
         </div>
       </div>

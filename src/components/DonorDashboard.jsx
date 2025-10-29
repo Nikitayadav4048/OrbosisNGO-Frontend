@@ -8,12 +8,52 @@ import { donorApi } from '../services/donorApi.js';
 
 const DonorDashboard = () => {
   const [dashboardData, setDashboardData] = useState(null);
+   const [profile, setProfile] = useState({});
   const [isLoading, setIsLoading] = useState(true);
+
+   useEffect(() => {
+      const fetchProfile = async () => {
+        try {
+          const data = await donorApi.getProfile();
+          setProfile(data);
+          setEditedProfile(data);
+        } catch (error) {
+          console.error('Error fetching profile:', error);
+          // Fallback to localStorage
+          const donorData = localStorage.getItem('donorData');
+          if (donorData) {
+            const parsedData = JSON.parse(donorData);
+            const profileData = {
+              fullName: parsedData.name || 'Donor',
+              email: parsedData.email || '',
+              phone: parsedData.phone || '',
+              address: parsedData.address || '',
+              organization: parsedData.organization || '',
+              joinDate: new Date(parsedData.registrationDate).toLocaleDateString(),
+              totalDonated: parsedData.donationAmount || 0,
+              donationsCount: 1,
+              donationFrequency: parsedData.donationFrequency || 'One-time',
+              donationMode: parsedData.donationMode || 'Bank Transfer',
+              panNumber: parsedData.panNumber || '',
+              gstNumber: parsedData.gstNumber || '',
+              preferredCauses: ['Women Empowerment']
+            };
+            setProfile(profileData);
+            setEditedProfile(profileData);
+          }
+        } finally {
+          setIsLoading(false);
+        }
+      };
+      
+      fetchProfile();
+    }, []);
   
   useEffect(() => {
     const fetchDashboard = async () => {
       try {
         const data = await donorApi.getDashboard();
+        console.log("ddd",data)
         setDashboardData(data);
       } catch (error) {
         console.error('Error fetching dashboard:', error);
@@ -43,6 +83,33 @@ const DonorDashboard = () => {
     fetchDashboard();
   }, []);
 
+  useEffect(()=>{
+    // getData();
+  })
+  const [donorData,setDonorData]=useState({})
+const getData=()=>{
+   const donorData = localStorage.getItem('donorData');
+   console.log("donordata",donorData)
+        if (donorData) {
+          const parsedData = JSON.parse(donorData);
+          const profileData = {
+            fullName: parsedData.name || 'Donor',
+            email: parsedData.email || '',
+            phone: parsedData.phone || '',
+            address: parsedData.address || '',
+            organization: parsedData.organization || '',
+            joinDate: new Date(parsedData.registrationDate).toLocaleDateString(),
+            totalDonated: parsedData.donationAmount || 0,
+            donationsCount: 1,
+            donationFrequency: parsedData.donationFrequency || 'One-time',
+            donationMode: parsedData.donationMode || 'Bank Transfer',
+            panNumber: parsedData.panNumber || '',
+            gstNumber: parsedData.gstNumber || '',
+            preferredCauses: ['Women Empowerment']
+          };
+          setDonorData(profileData)
+        }
+}
   const stats = {
     totalDonated: dashboardData?.totalDonated || 0,
     donationsCount: dashboardData?.donationsCount || 0,
@@ -90,7 +157,7 @@ const DonorDashboard = () => {
                   <DollarSign className="h-6 w-6 text-green-600" />
                 </div>
                 <div className="text-right">
-                  <p className="text-2xl font-bold text-gray-900">₹{stats.totalDonated?.toLocaleString()}</p>
+                  <p className="text-2xl font-bold text-gray-900">₹{profile.totalDonated?.toLocaleString()}</p>
                   <p className="text-sm text-gray-600">Total Donated</p>
                 </div>
               </div>

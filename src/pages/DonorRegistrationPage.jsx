@@ -122,20 +122,20 @@ const DonorRegistrationPage = () => {
       return;
     }
 
-    if (!formData.modeofDonation) {
-      setShowErrorModal("Please select a donation mode");
-      return;
-    }
+    // if (!formData.modeofDonation) {
+    //   setShowErrorModal("Please select a donation mode");
+    //   return;
+    // }
 
     if (!formData.donationFrequency) {
       setShowErrorModal("Please select donation frequency");
       return;
     }
 
-    if (!formData.consentForUpdate) {
-      setShowErrorModal("Please select your consent preference for updates");
-      return;
-    }
+    // if (!formData.consentForUpdate) {
+    //   setShowErrorModal("Please select your consent preference for updates");
+    //   return;
+    // }
 
     // Save donor data to localStorage for dashboard access
     const donorData = {
@@ -226,17 +226,9 @@ const DonorRegistrationPage = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-amber-50 flex items-center justify-center py-4 sm:py-8">
-      <div className="max-w-2xl w-full mx-auto px-3 sm:px-4">
+      <div className="max-w-2xl w-full mx-auto  sm:px-4">
         {/* Back to Home Link */}
-        <div className="mb-6">
-          <Link
-            to="/"
-            className="flex items-center gap-2 text-gray-600 hover:text-purple-600 transition-colors"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            <span className="text-sm font-medium">Back to Home</span>
-          </Link>
-        </div>
+       
 
         {/* Main Form Card */}
         <Card className="bg-white shadow-lg border-0">
@@ -353,7 +345,7 @@ const DonorRegistrationPage = () => {
                   Donation Details
                 </h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-                  <div className="space-y-2">
+                  {/* <div className="space-y-2">
                     <Label htmlFor="modeofDonation">Preferred Mode</Label>
                     <Select
                       value={formData.modeofDonation}
@@ -372,7 +364,7 @@ const DonorRegistrationPage = () => {
                         ))}
                       </SelectContent>
                     </Select>
-                  </div>
+                  </div> */}
 
                   <div className="space-y-2">
                     <Label htmlFor="donationAmount">Amount</Label>
@@ -406,18 +398,7 @@ const DonorRegistrationPage = () => {
                     </Select>
                   </div>
 
-                  <div className="space-y-2">
-                    <Label htmlFor="uploadPaymentProof">
-                      Upload Payment Proof (Optional)
-                    </Label>
-                    <Input
-                      id="uploadPaymentProof"
-                      name="uploadPaymentProof"
-                      type="file"
-                      onChange={handleChange}
-                      accept=".pdf,.jpg,.jpeg,.png"
-                    />
-                  </div>
+                 
                 </div>
               </div>
 
@@ -445,7 +426,7 @@ const DonorRegistrationPage = () => {
                         </p>
                         <div className="bg-green-50 border border-green-200 rounded-lg p-2 sm:p-3">
                           <p className="text-xs sm:text-sm font-medium text-green-800">
-                            💰 Donations are covered under 80G of Income Tax Act
+                             Donations are covered under 80G of Income Tax Act
                           </p>
                           <p className="text-xs text-green-600 mt-1">
                             Get tax exemption on your donation amount
@@ -457,8 +438,21 @@ const DonorRegistrationPage = () => {
                 </div>
               </div>
 
+               <div className="space-y-2">
+                    <Label htmlFor="uploadPaymentProof">
+                      Upload Payment Proof (Optional)
+                    </Label>
+                    <Input
+                      id="uploadPaymentProof"
+                      name="uploadPaymentProof"
+                      type="file"
+                      onChange={handleChange}
+                      accept=".pdf,.jpg,.jpeg,.png"
+                    />
+                  </div>
+
               {/* Consent */}
-              <div className="space-y-4">
+              {/* <div className="space-y-4">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">
                   Consent
                 </h3>
@@ -482,7 +476,7 @@ const DonorRegistrationPage = () => {
                     </SelectContent>
                   </Select>
                 </div>
-              </div>
+              </div> */}
 
               {/* Submit */}
               <div className="pt-6">

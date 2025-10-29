@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card.jsx';
 import { Button } from './ui/button.jsx';
 import { Badge } from './ui/badge.jsx';
+import { useNavigate } from "react-router-dom";
 import { 
   CheckCircle, 
   Clock, 
@@ -16,11 +17,14 @@ import {
   Activity
 } from 'lucide-react';
 
+
+
 const VolunteerDashboard = () => {
   const [tasks, setTasks] = useState([]);
   const [events, setEvents] = useState([]);
   const [stats, setStats] = useState({});
   const [isLoading, setIsLoading] = useState(true);
+  const navigate=useNavigate()
 
   useEffect(() => {
     // Simulate API call with demo data
@@ -237,9 +241,16 @@ const VolunteerDashboard = () => {
                 ))}
               </div>
               <div className="mt-4 text-center">
-                <Button variant="outline" className="w-full">
+                {/* <Button variant="outline" className="w-full">
                   View All Tasks
-                </Button>
+                </Button> */}
+                <Button
+  variant="outline"
+  className="w-full"
+  onClick={() => navigate("/MyTasks")}   // ✅ onClick added
+>
+  View All Task
+</Button>
               </div>
             </CardContent>
           </Card>
@@ -277,9 +288,9 @@ const VolunteerDashboard = () => {
                       </div>
                     </div>
                     <div className="mt-3 flex gap-2">
-                      <Button size="sm" variant="outline">
+                      {/* <Button size="sm" variant="outline">
                         View Details
-                      </Button>
+                      </Button> */}
                       {event.status === 'upcoming' && (
                         <Button size="sm" className="bg-blue-600 hover:bg-blue-700 text-white">
                           Register
@@ -290,9 +301,19 @@ const VolunteerDashboard = () => {
                 ))}
               </div>
               <div className="mt-4 text-center">
-                <Button variant="outline" className="w-full">
+                {/* <Button variant="outline" className="w-full">
                   View All Events
-                </Button>
+                </Button> */}
+<Button
+  variant="outline"
+  className="w-full"
+  onClick={() => navigate("/VolunteerEvents")}   // ✅ onClick added
+>
+  View All Events
+</Button>
+
+
+
               </div>
             </CardContent>
           </Card>
