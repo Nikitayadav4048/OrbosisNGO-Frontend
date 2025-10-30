@@ -537,6 +537,27 @@ console.log("respone",response)
                 </div>
               </CardContent>
             </Card> */}
+
+            {/* Quick Actions */}
+            <Card className="border-0 shadow-sm">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Clock className="h-5 w-5 text-orange-600" />
+                  Quick Actions
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  <Button 
+                    variant="outline" 
+                    className="w-full justify-start"
+                    onClick={() => navigate('/dashboard')}
+                  >
+                    <FileText className="h-4 w-4 mr-2" />
+                    View Certificates
+                  </Button></div></CardContent></Card>
+      
+
           </div>
         </div>
       </div>

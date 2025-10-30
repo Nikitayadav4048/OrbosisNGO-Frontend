@@ -37,6 +37,12 @@ const HeroSection = () => {
   const handeClick = () =>{
      navigate('/signup', { state: "Donor" });
   }
+   
+  // const navigate = useNavigate();
+  // const handeClick = () =>{
+  //   navigate('/signup', { state: "Volunteer" });
+  // }
+
 
   // Auto slide functionality
   useEffect(() => {
@@ -128,9 +134,13 @@ const HeroSection = () => {
                 >
                   Donate Now
                 </Button>
+
+
+
               {/* </Link> */}
               <Link to="/volunteer-registration" className="w-full">
                 <Button
+                onClick={()=>handeClick()}
                   size="lg"
                   className="w-full bg-purple-600 hover:bg-purple-700 text-white px-4 sm:px-6 py-3 text-sm sm:text-base font-medium rounded-lg"
                 >

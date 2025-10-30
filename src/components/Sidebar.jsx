@@ -102,6 +102,16 @@ const Sidebar = ({ activeTab, setActiveTab }) => {
             roles: ['volunteer']
         },
 
+        {
+            id: 'volunteer-registration',
+            label: 'Volunteer With Us',
+            icon: Calendar,
+            roles: ['volunteer']
+        },
+        
+
+
+
         // Donor Menu Items
         {
             id: 'donation-history',

@@ -83,7 +83,7 @@ const MissionVisionSection = () => {
                 className={`bg-white rounded-lg sm:rounded-xl p-4 sm:p-6 lg:p-8 border-2 ${item.borderColor} hover:shadow-lg transition-all duration-300`}
               >
                 <div className="flex flex-col sm:flex-row items-start space-y-4 sm:space-y-0 sm:space-x-4 lg:space-x-6">
-                  <div className={`relative-translate-y-1 p-3 sm:p-4 rounded-full ${item.iconBg} border-2 ${item.borderColor} w-12 h-12 sm:w-16 sm:h-16 flex items-center justify-center flex-shrink-0 mx-auto sm:mx-0`}>
+                  <div className={`relative-translate-y-1 p-3 sm:p-4 rounded-full ${item.iconBg} border-2 ${item.borderColor} w-12 h-12 sm:w-10 sm:h-10 flex items-center justify-center flex-shrink-0 mx-auto sm:mx-0`}>
                     <Icon className={`h-6 w-6 sm:h-8 sm:w-8 ${item.iconColor}`} />
                   </div>
                   <div className="flex-1 text-center sm:text-left">

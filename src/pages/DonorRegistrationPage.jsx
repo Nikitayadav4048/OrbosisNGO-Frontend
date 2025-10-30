@@ -267,6 +267,31 @@ const DonorRegistrationPage = () => {
                       required
                     />
                   </div>
+
+                   {/* <div className="space-y-2">
+                    <Label htmlFor="fullName">FullName *</Label>
+
+                    <Input
+                      id="fullName"
+                      name="fullName"
+                      value={formData.fullName}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        // Allow only letters and spaces
+                        const filtered = value.replace(/[^A-Za-z\s]/g, "");
+                        setFormData((prev) => ({ ...prev, fullName: filtered }));
+                      }}
+                      onBlur={handleBlur}
+                      placeholder="Enter your full name"
+                      required
+                    />
+                    
+
+
+              
+                    {showError('fullName') && <p className="text-red-600 text-sm mt-1">{errors.fullName}</p>}
+                  </div> */}
+
                   <div className="space-y-2">
                     <Label htmlFor="organisationName">Organization</Label>
                     <Input

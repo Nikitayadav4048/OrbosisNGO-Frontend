@@ -231,11 +231,11 @@ const VolunteerDashboard = () => {
                           {task.estimatedHours}h
                         </span>
                       </div>
-                      {task.status === 'pending' && (
+                      {/* {task.status === 'pending' && (
                         <Button size="sm" className="bg-purple-600 hover:bg-purple-700 text-white">
                           Start Task
                         </Button>
-                      )}
+                      )} */}
                     </div>
                   </div>
                 ))}

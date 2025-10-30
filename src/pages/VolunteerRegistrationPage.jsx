@@ -1,64 +1,80 @@
-import React, { useState } from 'react';
-import { Button } from '../components/ui/button.jsx';
-import { Input } from '../components/ui/input.jsx';
-import { Label } from '../components/ui/label.jsx';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select.jsx';
-import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card.jsx';
-import { ArrowLeft, Users, Upload } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useAppContext } from '../contexts/AppContext.jsx';
-import Modal from '../components/ui/modal.jsx';
+import React, { useState } from "react";
+import { Button } from "../components/ui/button.jsx";
+import { Input } from "../components/ui/input.jsx";
+import { Label } from "../components/ui/label.jsx";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../components/ui/select.jsx";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "../components/ui/card.jsx";
+import { ArrowLeft, Users, Upload } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { useAppContext } from "../contexts/AppContext.jsx";
+import Modal from "../components/ui/modal.jsx";
 
 const VolunteerRegistrationPage = () => {
   const navigate = useNavigate();
   const { setCurrentUser } = useAppContext();
   const [formData, setFormData] = useState({
-    fullName: '',
-    gender: '',
-    dob: '',
-    contactNumber: '',
-    email: '',
-    address: '',
-    skills: '',
-    profession: '',
-    areaOfVolunteering: '',
-    availability: '',
-    emergencyContactNumber: '',
+    fullName: "",
+    gender: "",
+    dob: "",
+    contactNumber: "",
+    email: "",
+    address: "",
+    skills: "",
+    profession: "",
+    areaOfVolunteering: "",
+    availability: "",
+    emergencyContactNumber: "",
     uploadIdProof: null,
-    termsAccepted: false
+    termsAccepted: false,
   });
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [showErrorModal, setShowErrorModal] = useState('');
+  const [showErrorModal, setShowErrorModal] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     // Validation
-    if (!formData.fullName || !formData.email || !formData.contactNumber || !formData.dob) {
-      setShowErrorModal('Please fill in all required fields');
+    if (
+      !formData.fullName ||
+      !formData.email ||
+      !formData.contactNumber ||
+      !formData.dob
+    ) {
+      setShowErrorModal("Please fill in all required fields");
       return;
     }
-    
+
     if (!formData.gender) {
-      setShowErrorModal('Please select your gender');
+      setShowErrorModal("Please select your gender");
       return;
     }
-    
+
     if (!formData.areaOfVolunteering) {
-      setShowErrorModal('Please select your preferred area of volunteering');
+      setShowErrorModal("Please select your preferred area of volunteering");
       return;
     }
-    
+
     if (!formData.availability) {
-      setShowErrorModal('Please select your availability');
+      setShowErrorModal("Please select your availability");
       return;
     }
-    
+
     if (!formData.termsAccepted) {
-      setShowErrorModal('Please accept the terms and conditions');
+      setShowErrorModal("Please accept the terms and conditions");
       return;
     }
-    
+
     // Save volunteer data to localStorage for dashboard access
     const volunteerData = {
       id: Date.now().toString(),
@@ -73,81 +89,104 @@ const VolunteerRegistrationPage = () => {
       areaOfVolunteering: formData.areaOfVolunteering,
       availability: formData.availability,
       emergencyContactNumber: formData.emergencyContactNumber,
-      role: 'volunteer',
+      role: "volunteer",
       registrationDate: new Date().toISOString(),
       joinDate: new Date().toLocaleDateString(),
       tasksCompleted: 0,
       eventsAttended: 0,
-      hoursVolunteered: 0
+      hoursVolunteered: 0,
     };
-    
+
     try {
       // Try backend first
       const formDataToSend = new FormData();
-      formDataToSend.append('fullName', formData.fullName);
-      formDataToSend.append('gender', formData.gender);
-      formDataToSend.append('dob', formData.dob);
-      formDataToSend.append('contactNumber', formData.contactNumber);
-      formDataToSend.append('email', formData.email);
-      formDataToSend.append('address', formData.address);
-      formDataToSend.append('skills', formData.skills);
-      formDataToSend.append('profession', formData.profession);
-      formDataToSend.append('areaOfVolunteering', formData.areaOfVolunteering);
-      formDataToSend.append('availability', formData.availability);
-      formDataToSend.append('emergencyContactNumber', formData.emergencyContactNumber);
+      formDataToSend.append("fullName", formData.fullName);
+      formDataToSend.append("gender", formData.gender);
+      formDataToSend.append("dob", formData.dob);
+      formDataToSend.append("contactNumber", formData.contactNumber);
+      formDataToSend.append("email", formData.email);
+      formDataToSend.append("address", formData.address);
+      formDataToSend.append("skills", formData.skills);
+      formDataToSend.append("profession", formData.profession);
+      formDataToSend.append("areaOfVolunteering", formData.areaOfVolunteering);
+      formDataToSend.append("availability", formData.availability);
+      formDataToSend.append(
+        "emergencyContactNumber",
+        formData.emergencyContactNumber
+      );
       if (formData.uploadIdProof) {
-        formDataToSend.append('uploadIdProof', formData.uploadIdProof);
+        formDataToSend.append("uploadIdProof", formData.uploadIdProof);
       }
 
-      const response = await fetch('https://orbosisngo-backend-1.onrender.com/api/volunteer/register', {
-        method: 'POST',
-        body: formDataToSend
-      });
-      
+      const response = await fetch(
+        "https://orbosisngo-backend-1.onrender.com/api/volunteer/register",
+        {
+          method: "POST",
+          body: formDataToSend,
+        }
+      );
+
       if (response.ok) {
         const data = await response.json();
         if (data.success) {
-          console.log('Backend registration successful');
+          console.log("Backend registration successful");
         }
       }
     } catch (error) {
-      console.log('Backend unavailable, proceeding with local storage:', error.message);
+      console.log(
+        "Backend unavailable, proceeding with local storage:",
+        error.message
+      );
     }
-    
+
     // Always save to localStorage and proceed
-    localStorage.setItem('volunteerData', JSON.stringify(volunteerData));
-    localStorage.setItem('userData', JSON.stringify(volunteerData));
-    localStorage.setItem('authToken', 'volunteer_' + Date.now());
-    localStorage.setItem('role', 'volunteer');
-    
+    localStorage.setItem("volunteerData", JSON.stringify(volunteerData));
+    localStorage.setItem("userData", JSON.stringify(volunteerData));
+    localStorage.setItem("authToken", "volunteer_" + Date.now());
+    localStorage.setItem("role", "volunteer");
+
     // Set current user in context
     setCurrentUser(volunteerData);
-    
+
     setShowSuccessModal(true);
     setFormData({
-      fullName: '', gender: '', dob: '', contactNumber: '', email: '',
-      address: '', skills: '', profession: '', areaOfVolunteering: '',
-      availability: '', emergencyContactNumber: '', uploadIdProof: null, termsAccepted: false
+      fullName: "",
+      gender: "",
+      dob: "",
+      contactNumber: "",
+      email: "",
+      address: "",
+      skills: "",
+      profession: "",
+      areaOfVolunteering: "",
+      availability: "",
+      emergencyContactNumber: "",
+      uploadIdProof: null,
+      termsAccepted: false,
     });
   };
 
   const handleChange = (e) => {
     const { name, value, type, checked, files } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: type === 'checkbox' ? checked : type === 'file' ? files[0] : value
+      [name]:
+        type === "checkbox" ? checked : type === "file" ? files[0] : value,
     }));
   };
 
   const handleSelectChange = (name, value) => {
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-amber-50 py-4 sm:py-8">
       <div className="max-w-2xl mx-auto px-3 sm:px-4">
         <div className="mb-6">
-          <Link to="/" className="flex items-center gap-2 text-gray-600 hover:text-purple-600">
+          <Link
+            to="/"
+            className="flex items-center gap-2 text-gray-600 hover:text-purple-600"
+          >
             <ArrowLeft className="h-4 w-4" />
             <span className="text-sm font-medium">Back to Home</span>
           </Link>
@@ -171,8 +210,10 @@ const VolunteerRegistrationPage = () => {
           <CardContent className="px-8 pb-8">
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="space-y-4">
-                <h3 className="text-lg font-semibold text-gray-900">Personal Information</h3>
-                
+                <h3 className="text-lg font-semibold text-gray-900">
+                  Personal Information
+                </h3>
+
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="fullName">Full Name *</Label>
@@ -180,14 +221,28 @@ const VolunteerRegistrationPage = () => {
                       id="fullName"
                       name="fullName"
                       value={formData.fullName}
-                      onChange={handleChange}
+                      onChange={(e) => {
+                        const onlyLetters = e.target.value.replace(
+                          /[^a-zA-Z\s]/g,
+                          ""
+                        ); // remove numbers & special chars
+                        setFormData((prev) => ({
+                          ...prev,
+                          fullName: onlyLetters,
+                        }));
+                      }}
                       required
                     />
                   </div>
 
                   <div className="space-y-2">
                     <Label htmlFor="gender">Gender *</Label>
-                    <Select value={formData.gender} onValueChange={(value) => handleSelectChange('gender', value)}>
+                    <Select
+                      value={formData.gender}
+                      onValueChange={(value) =>
+                        handleSelectChange("gender", value)
+                      }
+                    >
                       <SelectTrigger>
                         <SelectValue placeholder="Select gender" />
                       </SelectTrigger>
@@ -198,6 +253,18 @@ const VolunteerRegistrationPage = () => {
                       </SelectContent>
                     </Select>
                   </div>
+
+                  {/* <div className="space-y-2">
+                    <Label htmlFor="dob">Date of Birth *</Label>
+                    <Input
+                      id="dob"
+                      name="dob"
+                      type="date"
+                      value={formData.dob}
+                      onChange={handleChange}
+                      required
+                    />
+                  </div> */}
 
                   <div className="space-y-2">
                     <Label htmlFor="dob">Date of Birth *</Label>
@@ -218,8 +285,18 @@ const VolunteerRegistrationPage = () => {
                       name="contactNumber"
                       type="tel"
                       value={formData.contactNumber}
-                      onChange={handleChange}
+                      onChange={(e) => {
+                        const onlyDigits = e.target.value.replace(/\D/g, ""); // remove all non-digits
+                        if (onlyDigits.length <= 10) {
+                          setFormData((prev) => ({
+                            ...prev,
+                            contactNumber: onlyDigits,
+                          }));
+                        }
+                      }}
                       required
+                      inputMode="numeric"
+                      maxLength={10}
                     />
                   </div>
 
@@ -271,12 +348,19 @@ const VolunteerRegistrationPage = () => {
               </div>
 
               <div className="space-y-4">
-                <h3 className="text-lg font-semibold text-gray-900">Volunteering Preferences</h3>
-                
+                <h3 className="text-lg font-semibold text-gray-900">
+                  Volunteering Preferences
+                </h3>
+
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="areaOfVolunteering">Preferred Area *</Label>
-                    <Select value={formData.areaOfVolunteering} onValueChange={(value) => handleSelectChange('areaOfVolunteering', value)}>
+                    <Select
+                      value={formData.areaOfVolunteering}
+                      onValueChange={(value) =>
+                        handleSelectChange("areaOfVolunteering", value)
+                      }
+                    >
                       <SelectTrigger>
                         <SelectValue placeholder="Select area" />
                       </SelectTrigger>
@@ -291,7 +375,12 @@ const VolunteerRegistrationPage = () => {
 
                   <div className="space-y-2">
                     <Label htmlFor="availability">Availability *</Label>
-                    <Select value={formData.availability} onValueChange={(value) => handleSelectChange('availability', value)}>
+                    <Select
+                      value={formData.availability}
+                      onValueChange={(value) =>
+                        handleSelectChange("availability", value)
+                      }
+                    >
                       <SelectTrigger>
                         <SelectValue placeholder="Select availability" />
                       </SelectTrigger>
@@ -305,8 +394,10 @@ const VolunteerRegistrationPage = () => {
                   </div>
                 </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="emergencyContactNumber">Emergency Contact Number *</Label>
+                {/* <div className="space-y-2">
+                  <Label htmlFor="emergencyContactNumber">
+                    Emergency Contact Number *
+                  </Label>
                   <Input
                     id="emergencyContactNumber"
                     name="emergencyContactNumber"
@@ -315,10 +406,36 @@ const VolunteerRegistrationPage = () => {
                     onChange={handleChange}
                     required
                   />
+                </div> */}
+                <div className="space-y-2">
+                  <Label htmlFor="emergencyContactNumber">
+                    Emergency Contact Number *
+                  </Label>
+
+                  <Input
+                    id="emergencyContactNumber"
+                    name="emergencyContactNumber"
+                    type="tel"
+                    value={formData.emergencyContactNumber}
+                    onChange={(e) => {
+                      const onlyDigits = e.target.value.replace(/\D/g, ""); // remove all non-digits
+                      if (onlyDigits.length <= 12) {
+                        setFormData((prev) => ({
+                          ...prev,
+                          emergencyContactNumber: onlyDigits,
+                        }));
+                      }
+                    }}
+                    required
+                    inputMode="numeric"
+                    maxLength={10}
+                  />
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="uploadIdProof">Upload ID Proof (Optional)</Label>
+                  <Label htmlFor="uploadIdProof">
+                    Upload ID Proof (Optional)
+                  </Label>
                   <div className="relative">
                     <Input
                       id="uploadIdProof"
@@ -332,9 +449,13 @@ const VolunteerRegistrationPage = () => {
                       <Upload className="h-5 w-5 text-gray-400" />
                     </div>
                   </div>
-                  <p className="text-xs text-gray-500">Accepted formats: PDF, JPG, JPEG, PNG (Max 5MB)</p>
+                  <p className="text-xs text-gray-500">
+                    Accepted formats: PDF, JPG, JPEG, PNG (Max 5MB)
+                  </p>
                   {formData.uploadIdProof && (
-                    <p className="text-xs text-green-600">✓ File selected: {formData.uploadIdProof.name}</p>
+                    <p className="text-xs text-green-600">
+                      ✓ File selected: {formData.uploadIdProof.name}
+                    </p>
                   )}
                 </div>
               </div>
@@ -350,7 +471,8 @@ const VolunteerRegistrationPage = () => {
                     required
                   />
                   <span className="text-sm text-gray-700">
-                    I agree to the terms and conditions and commit to volunteering responsibly
+                    I agree to the terms and conditions and commit to
+                    volunteering responsibly
                   </span>
                 </label>
               </div>
@@ -369,9 +491,9 @@ const VolunteerRegistrationPage = () => {
       </div>
 
       {/* Error Modal */}
-      <Modal 
-        isOpen={!!showErrorModal} 
-        onClose={() => setShowErrorModal('')}
+      <Modal
+        isOpen={!!showErrorModal}
+        onClose={() => setShowErrorModal("")}
         title="Validation Error"
       >
         <div className="text-center">
@@ -379,8 +501,8 @@ const VolunteerRegistrationPage = () => {
             <span className="text-2xl">⚠️</span>
           </div>
           <p className="text-gray-700 mb-6">{showErrorModal}</p>
-          <Button 
-            onClick={() => setShowErrorModal('')}
+          <Button
+            onClick={() => setShowErrorModal("")}
             className="w-full bg-red-600 hover:bg-red-700 text-white"
           >
             OK
@@ -389,11 +511,11 @@ const VolunteerRegistrationPage = () => {
       </Modal>
 
       {/* Success Modal */}
-      <Modal 
-        isOpen={showSuccessModal} 
+      <Modal
+        isOpen={showSuccessModal}
         onClose={() => {
           setShowSuccessModal(false);
-          navigate('/dashboard');
+          navigate("/dashboard");
         }}
         title="Registration Successful"
       >
@@ -402,23 +524,25 @@ const VolunteerRegistrationPage = () => {
             <Users className="h-10 w-10 text-green-600" />
           </div>
           <h3 className="text-xl font-bold text-gray-900 mb-2">Welcome! 🎉</h3>
-          <p className="text-gray-600 mb-6">Your volunteer registration has been submitted successfully!</p>
+          <p className="text-gray-600 mb-6">
+            Your volunteer registration has been submitted successfully!
+          </p>
 
-          <Button 
+          <Button
             onClick={() => {
               setShowSuccessModal(false);
-              navigate('/dashboard');
-            }} 
+              navigate("/dashboard");
+            }}
             className="w-full bg-purple-600 hover:bg-purple-700 text-white mb-3"
           >
             Go to Dashboard
           </Button>
-          
-          <Button 
+
+          <Button
             onClick={() => {
               setShowSuccessModal(false);
-              navigate('/');
-            }} 
+              navigate("/");
+            }}
             variant="outline"
             className="w-full"
           >
